@@ -1,15 +1,9 @@
 package com.cleverCloud.cleverIdea.api;
 
-
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.scribe.builder.api.DefaultApi10a;
 import org.scribe.model.Token;
-import org.scribe.oauth.OAuthService;
 
 public class CleverCloudApi extends DefaultApi10a {
-
     public static final String BASE_URL = "https://api.clever-cloud.com/v2";
     private static final String AUTHORIZE_URL = BASE_URL + "/oauth/authorize?oauth_token=%s";
 
