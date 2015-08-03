@@ -1,46 +1,58 @@
 <idea-plugin version="2">
-    <id>com.clever-cloud.clever-idea</id>
-    <name>Clever IDEA</name>
-    <version>0.1</version>
-    <vendor email="gauthier.pogam-lemontagner@clever-cloud.com" url="http://www.clever-cloud.com">Clever Cloud</vendor>
+  <id>com.clever-cloud.clever-idea</id>
+  <name>Clever IDEA</name>
+  <version>0.1</version>
+  <vendor email="gauthier.pogam-lemontagner@clever-cloud.com"
+          url="http://www.clever-cloud.com">Clever Cloud
+  </vendor>
 
-    <description><![CDATA[
+  <description><![CDATA[
       Enter short description for your plugin here.<br>
       <em>most HTML tags may be used</em>
     ]]></description>
 
-    <change-notes><![CDATA[
+  <change-notes><![CDATA[
       Add change notes here.<br>
       <em>most HTML tags may be used</em>
     ]]>
-    </change-notes>
+  </change-notes>
 
-    <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
-    <idea-version since-build="131"/>
+  <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
+  <idea-version since-build="131"/>
 
-    <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-         on how to target different products -->
-    <depends>Git4Idea</depends>
+  <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+       on how to target different products -->
+  <depends>Git4Idea</depends>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
-    </extensions>
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+    <!-- <toolWindow id="CleverCloudLogs" anchor="bottom" secondary="false"
+                     factoryClass="com.cleverCloud.cleverIdea.toolWindow.CcLogsToolWindowFactory"/>-->
+    <projectService serviceImplementation="com.cleverCloud.cleverIdea.Settings" serviceInterface="com.cleverCloud.cleverIdea.Settings"/>
+  </extensions>
 
-    <application-components>
-        <!-- Add your application components here -->
-    </application-components>
+  <application-components>
+    <!-- Add your application components here -->
+  </application-components>
 
-    <project-components>
-        <!-- Add your project components here -->
-    </project-components>
+  <project-components>
+    <!-- Add your project components here -->
+  </project-components>
 
-    <actions>
-        <!-- Add your actions here -->
-        <group id="CleverCloud" description="Clever Cloud ..." text="Clever Cloud ..." icon="favicon.png">
-            <add-to-group group-id="VcsGroups" />
-            <action id="CleverCloud.cloneGitRepository" class="com.cleverCloud.cleverIdea.action.cloneGitRepository"
-                    text="Clone project ..." description="Clone a project form Clever Cloud"/>
-        </group>
-    </actions>
+  <actions>
+    <!-- Add your actions here -->
+    <group id="CleverCloud" description="Clever Cloud ..."
+           text="Clever Cloud ..." icon="favicon.png">
+      <add-to-group group-id="VcsGroups"/>
+    </group>
+    <action id="CleverCloud.LoginAction" class="com.cleverCloud.cleverIdea.action.LoginAction"
+            text="Login ..." description="Login on Clever Cloud">
+      <add-to-group group-id="CleverCloud"/>
+    </action>
+    <action id="CleverCloud.AssociateProjectAction" class="com.cleverCloud.cleverIdea.action.AssociateProjectAction"
+            text="Associate with project" description="Associate a project with a Clever Cloud application">
+      <add-to-group group-id="CleverCloud"/>
+    </action>
+  </actions>
 
 </idea-plugin>
