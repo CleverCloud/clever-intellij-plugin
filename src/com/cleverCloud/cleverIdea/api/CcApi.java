@@ -1,5 +1,6 @@
 package com.cleverCloud.cleverIdea.api;
 
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nullable;
 import org.scribe.builder.ServiceBuilder;
@@ -7,17 +8,11 @@ import org.scribe.model.*;
 import org.scribe.oauth.OAuthService;
 
 public class CcApi {
-  private static CcApi ourInstance = new CcApi();
   private Token accessToken;
   private OAuthService service;
 
-  private CcApi() {
-  }
-
-  public static CcApi getInstance() {
-    if (ourInstance == null) return new CcApi();
-
-    return ourInstance;
+  public static CcApi getInstance(Project project) {
+    return ServiceManager.getService(project, CcApi.class);
   }
 
   public boolean login(Project project) {
@@ -43,12 +38,12 @@ public class CcApi {
   }
 
   @Nullable
-  public Response callApi(String address) {
+  public String callApi(String url) {
     if (!isValidate()) return null;
 
-    OAuthRequest request = new OAuthRequest(Verb.GET, CleverCloudApi.BASE_URL + address);
+    OAuthRequest request = new OAuthRequest(Verb.GET, CleverCloudApi.BASE_URL + url);
     service.signRequest(accessToken, request);
-    return request.send();
+    return request.send().getBody();
   }
 
 }
