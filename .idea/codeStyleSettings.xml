@@ -97,6 +97,7 @@
           <option name="LINE_COMMENT_AT_FIRST_COLUMN" value="false" />
           <option name="BLOCK_COMMENT_AT_FIRST_COLUMN" value="false" />
           <option name="KEEP_LINE_BREAKS" value="false" />
+          <option name="KEEP_FIRST_COLUMN_COMMENT" value="false" />
           <option name="ELSE_ON_NEW_LINE" value="true" />
           <option name="WHILE_ON_NEW_LINE" value="true" />
           <option name="CATCH_ON_NEW_LINE" value="true" />
@@ -216,6 +217,5 @@
       </value>
     </option>
     <option name="USE_PER_PROJECT_SETTINGS" value="true" />
-    <option name="PREFERRED_PROJECT_CODE_STYLE" value="IntelliJ" />
   </component>
 </project>
