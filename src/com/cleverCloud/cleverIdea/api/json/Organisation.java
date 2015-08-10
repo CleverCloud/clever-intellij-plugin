@@ -9,17 +9,17 @@ import com.intellij.openapi.project.Project;
 import java.io.IOException;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OrganisationJSON extends CleverServiceJSON {
+public class Organisation extends CleverService {
 
-  public ApplicationJSON[] getChildren(Project project) {
+  public Application[] getChildren(Project project) {
     ObjectMapper mapper = new ObjectMapper();
     CcApi ccApi = ServiceManager.getService(project, CcApi.class);
     String json = ccApi.callApi((this.getId().equals("self") ? "/" : "/organisations/") + this.getId() + "/applications");
-    ApplicationJSON[] children = null;
+    Application[] children = null;
 
     try {
-      children = mapper.readValue(json, ApplicationJSON[].class);
-      for (ApplicationJSON app : children) {
+      children = mapper.readValue(json, Application[].class);
+      for (Application app : children) {
         app.setParent(this);
       }
     }

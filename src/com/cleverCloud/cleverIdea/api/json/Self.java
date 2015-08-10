@@ -3,7 +3,7 @@ package com.cleverCloud.cleverIdea.api.json;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class SelfJSON {
+public class Self {
 
   private String id;
   private String email;

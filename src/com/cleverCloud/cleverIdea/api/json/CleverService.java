@@ -3,7 +3,7 @@ package com.cleverCloud.cleverIdea.api.json;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CleverServiceJSON {
+public class CleverService {
 
   private String id;
   private String name;
@@ -34,6 +34,7 @@ public class CleverServiceJSON {
   }
 
   public ServiceType getType() {
+    //noinspection SpellCheckingInspection
     if (this.id.startsWith("addon_")) return ServiceType.ADDON;
     if (this.id.startsWith("app_")) return ServiceType.APPLICATION;
 
