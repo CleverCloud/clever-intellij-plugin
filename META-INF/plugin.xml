@@ -28,7 +28,9 @@
     <!-- Add your extensions here -->
     <!-- <toolWindow id="CleverCloudLogs" anchor="bottom" secondary="false"
                      factoryClass="com.cleverCloud.cleverIdea.toolWindow.CcLogsToolWindowFactory"/>-->
-    <projectService serviceImplementation="com.cleverCloud.cleverIdea.Settings" serviceInterface="com.cleverCloud.cleverIdea.Settings"/>
+    <projectService serviceInterface="com.cleverCloud.cleverIdea.Settings" serviceImplementation="com.cleverCloud.cleverIdea.Settings"/>
+    <projectService serviceInterface="com.cleverCloud.cleverIdea.vcs.GitProjectDetector"
+                    serviceImplementation="com.cleverCloud.cleverIdea.vcs.GitProjectDetector"/>
   </extensions>
 
   <application-components>
@@ -37,22 +39,21 @@
 
   <project-components>
     <!-- Add your project components here -->
+    <component>
+      <implementation-class>com.cleverCloud.cleverIdea.CleverIdeaProjectComponent</implementation-class>
+    </component>
   </project-components>
 
   <actions>
     <!-- Add your actions here -->
     <group id="CleverCloud" description="Clever Cloud ..."
-           text="Clever Cloud ..." icon="favicon.png">
+           text="Clever Cloud ..." icon="/favicon.png" popup="true">
       <add-to-group group-id="VcsGroups"/>
+      <action id="CleverCloud.AssociateProjectAction" class="com.cleverCloud.cleverIdea.action.AssociateProjectAction"
+              text="Associate with project" description="Associate a project with a Clever Cloud application"/>
+      <action id="com.cleverCloud.cleverIdea.action.DeployAction" class="com.cleverCloud.cleverIdea.action.DeployAction"
+              text="Deploy on Clever Cloud" description="Deploy your application on Clever Cloud"/>
     </group>
-    <action id="CleverCloud.LoginAction" class="com.cleverCloud.cleverIdea.action.LoginAction"
-            text="Login ..." description="Login on Clever Cloud">
-      <add-to-group group-id="CleverCloud"/>
-    </action>
-    <action id="CleverCloud.AssociateProjectAction" class="com.cleverCloud.cleverIdea.action.AssociateProjectAction"
-            text="Associate with project" description="Associate a project with a Clever Cloud application">
-      <add-to-group group-id="CleverCloud"/>
-    </action>
   </actions>
 
 </idea-plugin>
