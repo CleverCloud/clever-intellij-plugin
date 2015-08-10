@@ -1,16 +1,34 @@
 package com.cleverCloud.cleverIdea.action;
 
-import com.cleverCloud.cleverIdea.vcs.ProjectDetector;
+import com.cleverCloud.cleverIdea.vcs.GitProjectDetector;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vcs.ProjectLevelVcsManager;
+import git4idea.GitVcs;
 
 public class AssociateProjectAction extends AnAction {
 
   @Override
   public void actionPerformed(AnActionEvent e) {
-    Project project = e.getProject();
-    new ProjectDetector().detect(project);
+    if (e.getProject() == null) return;
+    GitProjectDetector gitProjectDetector = new GitProjectDetector();
+    gitProjectDetector.detect(e.getProject());
   }
 
+  @Override
+  public void update(AnActionEvent e) {
+    if (e.getProject() == null) {
+      e.getPresentation().setEnabledAndVisible(false);
+      return;
+    }
+
+    ProjectLevelVcsManager projectLevelVcsManager = ProjectLevelVcsManager.getInstance(e.getProject());
+
+    if (!projectLevelVcsManager.checkVcsIsActive(GitVcs.NAME)) {
+      e.getPresentation().setEnabled(false);
+    }
+    else {
+      e.getPresentation().setEnabledAndVisible(true);
+    }
+  }
 }
