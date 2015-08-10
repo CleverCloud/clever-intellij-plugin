@@ -13,7 +13,8 @@ import java.net.URISyntaxException;
 
 public class CcApiLogin extends DialogWrapper {
   private JPanel panel;
-  private JTextField tokenTextField;
+  private JTextField tokenTextField1;
+  private JTextField secretTextField1;
   private JLabel label;
 
   public CcApiLogin(@Nullable Project project, @NotNull String address) {
@@ -35,7 +36,11 @@ public class CcApiLogin extends DialogWrapper {
     return panel;
   }
 
-  public String getVerifier() {
-    return tokenTextField.getText();
+  public String getToken() {
+    return tokenTextField1.getText();
+  }
+
+  public String getSecret() {
+    return secretTextField1.getText();
   }
 }
