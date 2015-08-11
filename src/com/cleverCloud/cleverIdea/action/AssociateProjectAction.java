@@ -11,8 +11,8 @@ public class AssociateProjectAction extends AnAction {
   @Override
   public void actionPerformed(AnActionEvent e) {
     if (e.getProject() == null) return;
-    GitProjectDetector gitProjectDetector = new GitProjectDetector();
-    gitProjectDetector.detect(e.getProject());
+    GitProjectDetector gitProjectDetector = new GitProjectDetector(e.getProject());
+    gitProjectDetector.detect();
   }
 
   @Override

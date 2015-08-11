@@ -1,6 +1,5 @@
 package com.cleverCloud.cleverIdea.vcs;
 
-import com.cleverCloud.cleverIdea.Settings;
 import com.cleverCloud.cleverIdea.api.CcApi;
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,31 +25,35 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
   private Pattern pattern =
     Pattern.compile("^git\\+ssh://git@push\\.[\\w]{3}\\.clever-cloud\\.com/(app_([a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}))\\.git$");
   private GitRepositoryManager myGitRepositoryManager = null;
+  private Project myProject;
 
-  public List<Application> detect(@NotNull Project project) {
-    if (myGitRepositoryManager == null) myGitRepositoryManager = ServiceManager.getService(project, GitRepositoryManager.class);
+  public GitProjectDetector(Project project) {
+    myProject = project;
+    if (myGitRepositoryManager == null) myGitRepositoryManager = ServiceManager.getService(myProject, GitRepositoryManager.class);
+  }
 
-    List<Application> cleverRemoteList = getCleverRemoteList(project);
+  public List<Application> detect() {
+    List<Application> applicationList = getApplicationList(getAppIdList());
+    String remoteStringList = remoteListToString(applicationList);
+    String content = remoteStringList == null
+                     ? "No Clever Cloud application has been found in your remotes."
+                     : String.format(
+                       "Clever IDEA has detected the following remotes corresponding to Clever Cloud applications :<br /><ul>%s</ul><br " +
+                       "/>You can push on one of this remotes using the \"Push on Clever Cloud\" action (VCS|Clever Cloud...).",
+                       remoteStringList);
 
-    if (!cleverRemoteList.isEmpty()) {
-      Settings settings = ServiceManager.getService(project, Settings.class);
-      settings.apps = cleverRemoteList;
-    }
+    new Notification("Plugins Suggestion", "Clever Cloud application detection", content, NotificationType.INFORMATION).notify(myProject);
 
-    String remoteStringList = remoteListToString(cleverRemoteList);
-    notifyNewRemotes(project, remoteStringList);
-
-    return cleverRemoteList;
+    return applicationList;
   }
 
   @NotNull
-  private List<Application> getCleverRemoteList(Project project) {
+  public List<String> getAppIdList() {
+    List<String> appIdList = new ArrayList<>();
     List<GitRepository> gitRepositoryList;
-    List<Application> cleverRemoteList = new ArrayList<>();
     gitRepositoryList = myGitRepositoryManager != null ? myGitRepositoryManager.getRepositories() : null;
-    CcApi ccApi = CcApi.getInstance(project);
 
-    if (gitRepositoryList == null) return cleverRemoteList;
+    if (gitRepositoryList == null) return appIdList;
 
     for (GitRepository aGitRepositoryList : gitRepositoryList) {
       Collection<GitRemote> gitRemotes = aGitRepositoryList.getRemotes();
@@ -62,25 +65,37 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
           Matcher matcher = pattern.matcher(anUrl);
 
           if (matcher.matches()) {
-            String response = ccApi.callApi(String.format("/self/applications/%s", matcher.group(1)));
-
-            if (response != null) {
-              ObjectMapper mapper = new ObjectMapper();
-
-              try {
-                Application application = mapper.readValue(response, Application.class);
-                System.out.println(application);
-                cleverRemoteList.add(application);
-              }
-              catch (IOException e) {
-                e.printStackTrace();
-              }
-            }
+            appIdList.add(matcher.group(1));
           }
         }
       }
     }
-    return cleverRemoteList;
+
+    return appIdList;
+  }
+
+  public List<Application> getApplicationList(List<String> appIdList) {
+    List<Application> applicationList = new ArrayList<>();
+    CcApi ccApi = CcApi.getInstance(myProject);
+
+    for (String appId : appIdList) {
+      String response = ccApi.callApi(String.format("/self/applications/%s", appId));
+
+      if (response != null) {
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+          Application application = mapper.readValue(response, Application.class);
+          System.out.println(application);
+          applicationList.add(application);
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+
+    return applicationList;
   }
 
   @Nullable
@@ -90,32 +105,15 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
     String linkList = "";
     for (Application application : applications) {
       // TODO : replace getName with remote name
-      linkList = linkList + String.format("%s : %s<br />", application.getName(), application.getId());
+      linkList = linkList + String.format("<li>%s<br /></li>", application.getName());
     }
 
     return linkList;
   }
 
-  private void notifyNewRemotes(Project project, String remoteStringList) {
-    String content;
-    if (remoteStringList == null) {
-      content = "No Clever Cloud application has been found in your remotes.";
-    }
-    else {
-      content = String.format(
-        "Clever IDEA has detected the following remotes corresponding to Clever Cloud applications :<br />%s<br />You can push on one of " +
-        "this remotes using the \"Push on Clever Cloud\" action (VCS|Clever Cloud...).", remoteStringList);
-    }
-
-    Notification notification =
-      new Notification("Plugins Suggestion", "Clever Cloud application detection", content, NotificationType.INFORMATION);
-
-    notification.notify(project);
-  }
-
   @Override
   public void repositoryChanged(@NotNull GitRepository repository) {
-    detect(repository.getProject());
+    detect();
   }
 
 }

@@ -2,6 +2,7 @@ package com.cleverCloud.cleverIdea.api;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.ui.HyperlinkLabel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,10 +16,20 @@ public class CcApiLogin extends DialogWrapper {
   private JPanel panel;
   private JTextField tokenTextField1;
   private JTextField secretTextField1;
-  private JLabel label;
+  private HyperlinkLabel label;
 
   public CcApiLogin(@Nullable Project project, @NotNull String address) {
     super(project);
+    openBrowser(address);
+    label.setHtmlText(String.format(
+      "Copy and past the Token and the Secret shown in your browser : (If the page does not open, <a href=\"%s\">click here</a>)",
+      address));
+    label.addHyperlinkListener(e -> {
+      openBrowser(address);
+    });
+  }
+
+  private void openBrowser(String address) {
     Desktop desktop = Desktop.getDesktop();
     try {
       URI uri = new URI(address);
