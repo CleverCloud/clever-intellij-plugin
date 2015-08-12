@@ -5,13 +5,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Organisation extends CleverService {
 
-  public Application[] getChildren(Project project) {
+  @Nullable
+  public Application[] getChildren(@NotNull Project project) {
     ObjectMapper mapper = new ObjectMapper();
     CcApi ccApi = ServiceManager.getService(project, CcApi.class);
     String json = ccApi.callApi((this.getId().equals("self") ? "/" : "/organisations/") + this.getId() + "/applications");

@@ -1,5 +1,6 @@
 package com.cleverCloud.cleverIdea;
 
+import com.cleverCloud.cleverIdea.api.CcApi;
 import com.cleverCloud.cleverIdea.vcs.GitProjectDetector;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -46,21 +47,25 @@ public class CleverIdeaProjectComponent implements ProjectComponent {
 
   @Override
   public void projectOpened() {
-    ProjectLevelVcsManagerImpl vcsManager = (ProjectLevelVcsManagerImpl)myProjectLevelVcsManager;
+    if (!CcApi.getInstance(myProject).isValidate()) return;
 
+    ProjectLevelVcsManagerImpl vcsManager = (ProjectLevelVcsManagerImpl)myProjectLevelVcsManager;
     vcsManager.addInitializationRequest(VcsInitObject.AFTER_COMMON, () -> {
       GitVcs gitVcs = GitVcs.getInstance(myProject);
       VirtualFile[] gitRoots = new VirtualFile[0];
-      if (gitVcs != null) {
-        gitRoots = vcsManager.getRootsUnderVcs(gitVcs);
-      }
+
+      if (gitVcs != null) gitRoots = vcsManager.getRootsUnderVcs(gitVcs);
+
       for (VirtualFile root : gitRoots) {
         GitRepository repo = myGitRepositoryManager.getRepositoryForRoot(root);
+
         if (repo != null) {
           GitProjectDetector gitProjectDetector = new GitProjectDetector(myProject);
           List<String> appIdList = gitProjectDetector.getAppIdList();
+
           if (!appIdList.isEmpty()) {
             Settings settings = ServiceManager.getService(myProject, Settings.class);
+
             new Notification("Plugins Suggestion", "Clever Cloud application detection", String.format(
               "The Clever IDEA plugin has detected that you have %d remotes pointing to Clever Cloud. " +
               "<a href=\"\">Click here</a> to enable integration.", appIdList.size()), NotificationType.INFORMATION,

@@ -30,7 +30,7 @@ public class CcApiLogin extends DialogWrapper {
     label.addHyperlinkListener(e -> openBrowser(address));
   }
 
-  private void openBrowser(String address) {
+  private void openBrowser(@NotNull String address) {
     Desktop desktop = Desktop.getDesktop();
     try {
       URI uri = new URI(address);
@@ -38,7 +38,7 @@ public class CcApiLogin extends DialogWrapper {
       init();
       setTitle("Login");
     }
-    catch (URISyntaxException | IOException e) {
+    catch (@NotNull URISyntaxException | IOException e) {
       e.printStackTrace();
     }
   }

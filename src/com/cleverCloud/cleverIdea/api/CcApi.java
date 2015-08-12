@@ -17,9 +17,9 @@ import org.scribe.oauth.OAuthService;
  * Main class used to interact with th API
  */
 public class CcApi {
-  private static CcApi ourInstance = null;
+  @Nullable private static CcApi ourInstance = null;
   private Project myProject;
-  private Token accessToken;
+  @Nullable private Token accessToken;
   private OAuthService service;
 
   /**
@@ -27,6 +27,7 @@ public class CcApi {
    * @param project Project opened in the IDE. It's used to get the API settings of the project.
    * @return Instance of the class
    */
+  @NotNull
   public static CcApi getInstance(@NotNull Project project) {
     if (ourInstance == null) {
       ourInstance = new CcApi();
@@ -34,9 +35,11 @@ public class CcApi {
 
     ourInstance.myProject = project;
     Settings settings = ServiceManager.getService(project, Settings.class);
+
     if (settings.oAuthToken != null && settings.oAuthSecret != null) {
       ourInstance.accessToken = new Token(settings.oAuthToken, settings.oAuthSecret);
     }
+
     return ourInstance;
   }
 

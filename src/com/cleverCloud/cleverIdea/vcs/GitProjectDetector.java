@@ -22,9 +22,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GitProjectDetector implements GitRepositoryChangeListener {
-  private Pattern pattern =
+  @NotNull private Pattern pattern =
     Pattern.compile("^git\\+ssh://git@push\\.[\\w]{3}\\.clever-cloud\\.com/(app_([a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}))\\.git$");
-  private GitRepositoryManager myGitRepositoryManager = null;
+  @Nullable private GitRepositoryManager myGitRepositoryManager = null;
   private Project myProject;
 
   public GitProjectDetector(Project project) {
@@ -32,6 +32,7 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
     if (myGitRepositoryManager == null) myGitRepositoryManager = ServiceManager.getService(myProject, GitRepositoryManager.class);
   }
 
+  @NotNull
   public List<Application> detect() {
     List<Application> applicationList = getApplicationList(getAppIdList());
     String remoteStringList = remoteListToString(applicationList);
@@ -74,7 +75,8 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
     return appIdList;
   }
 
-  public List<Application> getApplicationList(List<String> appIdList) {
+  @NotNull
+  public List<Application> getApplicationList(@NotNull List<String> appIdList) {
     List<Application> applicationList = new ArrayList<>();
     CcApi ccApi = CcApi.getInstance(myProject);
 
@@ -99,7 +101,7 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
   }
 
   @Nullable
-  private String remoteListToString(List<Application> applications) {
+  private String remoteListToString(@NotNull List<Application> applications) {
     if (applications.isEmpty()) return null;
 
     String linkList = "";
