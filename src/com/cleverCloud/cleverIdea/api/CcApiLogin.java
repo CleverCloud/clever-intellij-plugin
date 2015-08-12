@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * TODO : Ask about UI Designer
+ */
 public class CcApiLogin extends DialogWrapper {
   private JPanel panel;
   private JTextField tokenTextField1;
@@ -24,9 +27,7 @@ public class CcApiLogin extends DialogWrapper {
     label.setHtmlText(String.format(
       "Copy and past the Token and the Secret shown in your browser : (If the page does not open, <a href=\"%s\">click here</a>)",
       address));
-    label.addHyperlinkListener(e -> {
-      openBrowser(address);
-    });
+    label.addHyperlinkListener(e -> openBrowser(address));
   }
 
   private void openBrowser(String address) {

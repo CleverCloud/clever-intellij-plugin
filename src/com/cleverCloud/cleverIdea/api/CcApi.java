@@ -13,12 +13,20 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 
+/**
+ * Main class used to interact with th API
+ */
 public class CcApi {
   private static CcApi ourInstance = null;
   private Project myProject;
   private Token accessToken;
   private OAuthService service;
 
+  /**
+   * Return the instance of the API.
+   * @param project Project opened in the IDE. It's used to get the API settings of the project.
+   * @return Instance of the class
+   */
   public static CcApi getInstance(@NotNull Project project) {
     if (ourInstance == null) {
       ourInstance = new CcApi();
@@ -32,6 +40,10 @@ public class CcApi {
     return ourInstance;
   }
 
+  /**
+   * Login to the CcApi. Required to call the API.
+   * @return true if login success, false if login fail
+   */
   public boolean login() {
     @SuppressWarnings("SpellCheckingInspection") final String API_KEY = "JaGomLuixI29k62K9Zf9klIlQbZHdf";
     @SuppressWarnings("SpellCheckingInspection") final String API_SECRET = "KRP5Ckc0CKXRBE0QsmmHX3nVG8n5Mu";
@@ -54,12 +66,20 @@ public class CcApi {
     notification.notify(myProject);
   }
 
+  /**
+   * @return if the Access Token is defined or not.
+   */
   public boolean isValidate() {
     return this.accessToken != null;
   }
 
+  /**
+   * Call directly the API.
+   * @param url to call in the API. Should be the complete URL, with parameters.
+   * @return body of the response of the API
+   */
   @Nullable
-  public String callApi(String url) {
+  public String callApi(@NotNull String url) {
     if (!isValidate()) {
       if (!login()) {
         callApiErrorNotification(url);
