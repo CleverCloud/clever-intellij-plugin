@@ -8,7 +8,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.components.ServiceManager;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class DeployAction extends AnAction {
   @Override
@@ -16,12 +16,13 @@ public class DeployAction extends AnAction {
     if (e.getProject() == null) return;
 
     Settings settings = ServiceManager.getService(e.getProject(), Settings.class);
-    List<Application> apps = settings.getApps();
-    if (apps == null) {
+    ArrayList<Application> apps = settings.apps;
+    if (apps.isEmpty()) {
       GitProjectDetector gitProjectDetector = new GitProjectDetector(e.getProject());
       apps = gitProjectDetector.detect();
     }
     DeployDialog dialog = new DeployDialog(e.getProject(), apps);
-    dialog.show();
+    if (dialog.showAndGet()) {
+    }
   }
 }

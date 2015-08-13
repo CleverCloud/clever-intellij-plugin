@@ -47,8 +47,15 @@ public class CleverIdeaProjectComponent implements ProjectComponent {
 
   @Override
   public void projectOpened() {
-    if (!CcApi.getInstance(myProject).isValidate()) return;
+    if (ServiceManager.getService(myProject, Settings.class).apps.isEmpty()) detectCleverApp();
+  }
 
+  @Override
+  public void projectClosed() {
+    // called when project is being closed
+  }
+
+  private void detectCleverApp() {
     ProjectLevelVcsManagerImpl vcsManager = (ProjectLevelVcsManagerImpl)myProjectLevelVcsManager;
     vcsManager.addInitializationRequest(VcsInitObject.AFTER_COMMON, () -> {
       GitVcs gitVcs = GitVcs.getInstance(myProject);
@@ -66,21 +73,20 @@ public class CleverIdeaProjectComponent implements ProjectComponent {
           if (!appIdList.isEmpty()) {
             Settings settings = ServiceManager.getService(myProject, Settings.class);
 
-            new Notification("Plugins Suggestion", "Clever Cloud application detection", String.format(
+            new Notification("Vcs Important Messages", "Clever Cloud application detection", String.format(
               "The Clever IDEA plugin has detected that you have %d remotes pointing to Clever Cloud. " +
               "<a href=\"\">Click here</a> to enable integration.", appIdList.size()), NotificationType.INFORMATION,
                              (notification, event) -> {
                                settings.apps = gitProjectDetector.getApplicationList(appIdList);
                                notification.expire();
                              }).notify(myProject);
+
+            new Notification("Vcs Minor Notifications", "Applications successfully linked", String
+              .format("The following Clever Cloud application have been linked successfully :<br />%s",
+                      gitProjectDetector.remoteListToString(settings.apps)), NotificationType.INFORMATION).notify(myProject);
           }
         }
       }
     });
-  }
-
-  @Override
-  public void projectClosed() {
-    // called when project is being closed
   }
 }

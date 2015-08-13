@@ -33,8 +33,8 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
   }
 
   @NotNull
-  public List<Application> detect() {
-    List<Application> applicationList = getApplicationList(getAppIdList());
+  public ArrayList<Application> detect() {
+    ArrayList<Application> applicationList = getApplicationList(getAppIdList());
     String remoteStringList = remoteListToString(applicationList);
     String content = remoteStringList == null
                      ? "No Clever Cloud application has been found in your remotes."
@@ -43,14 +43,15 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
                        "/>You can push on one of this remotes using the \"Push on Clever Cloud\" action (VCS|Clever Cloud...).",
                        remoteStringList);
 
-    new Notification("Plugins Suggestion", "Clever Cloud application detection", content, NotificationType.INFORMATION).notify(myProject);
+    new Notification("Vcs Important Messages", "Clever Cloud application detection", content, NotificationType.INFORMATION)
+      .notify(myProject);
 
     return applicationList;
   }
 
   @NotNull
-  public List<String> getAppIdList() {
-    List<String> appIdList = new ArrayList<>();
+  public ArrayList<String> getAppIdList() {
+    ArrayList<String> appIdList = new ArrayList<>();
     List<GitRepository> gitRepositoryList;
     gitRepositoryList = myGitRepositoryManager != null ? myGitRepositoryManager.getRepositories() : null;
 
@@ -76,8 +77,8 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
   }
 
   @NotNull
-  public List<Application> getApplicationList(@NotNull List<String> appIdList) {
-    List<Application> applicationList = new ArrayList<>();
+  public ArrayList<Application> getApplicationList(@NotNull List<String> appIdList) {
+    ArrayList<Application> applicationList = new ArrayList<>();
     CcApi ccApi = CcApi.getInstance(myProject);
 
     for (String appId : appIdList) {
@@ -88,7 +89,6 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
 
         try {
           Application application = mapper.readValue(response, Application.class);
-          System.out.println(application);
           applicationList.add(application);
         }
         catch (IOException e) {
@@ -101,7 +101,7 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
   }
 
   @Nullable
-  private String remoteListToString(@NotNull List<Application> applications) {
+  public String remoteListToString(@NotNull ArrayList<Application> applications) {
     if (applications.isEmpty()) return null;
 
     String linkList = "";

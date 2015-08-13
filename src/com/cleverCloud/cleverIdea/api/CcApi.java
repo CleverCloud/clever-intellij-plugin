@@ -36,7 +36,7 @@ public class CcApi {
     ourInstance.myProject = project;
     Settings settings = ServiceManager.getService(project, Settings.class);
 
-    if (settings.oAuthToken != null && settings.oAuthSecret != null) {
+    if (!settings.oAuthToken.isEmpty() && !settings.oAuthSecret.isEmpty()) {
       ourInstance.accessToken = new Token(settings.oAuthToken, settings.oAuthSecret);
     }
 
@@ -52,10 +52,14 @@ public class CcApi {
     @SuppressWarnings("SpellCheckingInspection") final String API_SECRET = "KRP5Ckc0CKXRBE0QsmmHX3nVG8n5Mu";
     final String API_CALLBACK = "https://console.clever-cloud.com/cli-oauth";
     final CcApiLogin login = new CcApiLogin(myProject, API_CALLBACK);
+
     service = new ServiceBuilder().provider(CleverCloudApi.class).apiKey(API_KEY).apiSecret(API_SECRET).callback(API_CALLBACK).build();
 
     if (login.showAndGet()) {
       this.accessToken = new Token(login.getToken(), login.getSecret());
+      Settings settings = ServiceManager.getService(myProject, Settings.class);
+      settings.oAuthToken = login.getToken();
+      settings.oAuthSecret = login.getSecret();
       return true;
     }
 

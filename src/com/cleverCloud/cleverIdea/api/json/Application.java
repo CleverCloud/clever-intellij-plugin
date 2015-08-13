@@ -9,10 +9,9 @@ public class Application extends CleverService {
   private GitRemote myRemote;
   private Organisation parent;
 
-  public Application(GitRemote remote) {
+  public Application() {
     this.parent = new Organisation();
     this.parent.setId("self");
-    myRemote = remote;
   }
 
   public void setParent(Organisation parent) {

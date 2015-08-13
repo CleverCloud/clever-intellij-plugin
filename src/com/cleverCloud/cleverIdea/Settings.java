@@ -6,6 +6,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @State(
@@ -13,9 +14,9 @@ import java.util.List;
   storages = {@Storage(id = "other", file = StoragePathMacros.PROJECT_FILE),
     @Storage(id = "dir", file = StoragePathMacros.PROJECT_CONFIG_DIR + "/cleverIdea.xml", scheme = StorageScheme.DIRECTORY_BASED)})
 public class Settings implements PersistentStateComponent<Settings> {
-  @Nullable public List<Application> apps = null;
-  @Nullable public String oAuthToken = null;
-  @Nullable public String oAuthSecret = null;
+  @NotNull public ArrayList<Application> apps = new ArrayList<>();
+  @NotNull public String oAuthToken = "";
+  @NotNull public String oAuthSecret = "";
 
   @Override
   public Settings getState() {
@@ -25,10 +26,5 @@ public class Settings implements PersistentStateComponent<Settings> {
   @Override
   public void loadState(@NotNull Settings state) {
     XmlSerializerUtil.copyBean(state, this);
-  }
-
-  @Nullable
-  public List<Application> getApps() {
-    return apps;
   }
 }
