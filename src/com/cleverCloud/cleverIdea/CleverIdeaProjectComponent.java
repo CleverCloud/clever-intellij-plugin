@@ -1,6 +1,5 @@
 package com.cleverCloud.cleverIdea;
 
-import com.cleverCloud.cleverIdea.api.CcApi;
 import com.cleverCloud.cleverIdea.vcs.GitProjectDetector;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
