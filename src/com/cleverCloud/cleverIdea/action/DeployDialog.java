@@ -12,6 +12,7 @@ import java.util.List;
 public class DeployDialog extends DialogWrapper {
   private JPanel contentPane;
   private JComboBox<String> myComboBox;
+  private List<Application> myApplications;
 
   public DeployDialog(Project project, @NotNull List<Application> apps) {
     super(project);
@@ -26,9 +27,11 @@ public class DeployDialog extends DialogWrapper {
     return contentPane;
   }
 
-  private void setComboBoxContent(@NotNull List<Application> apps) {
-    if (!apps.isEmpty()) {
-      for (Application app : apps) {
+  private void setComboBoxContent(@NotNull List<Application> applications) {
+    myApplications = applications;
+
+    if (!applications.isEmpty()) {
+      for (Application app : applications) {
         myComboBox.addItem(app.getName());
       }
     }
@@ -38,5 +41,12 @@ public class DeployDialog extends DialogWrapper {
   @Override
   public JComponent getPreferredFocusedComponent() {
     return myComboBox;
+  }
+
+  public Application getApplicationSelected() {
+    int selectedIndex = myComboBox.getSelectedIndex();
+    Application application = myApplications.get(selectedIndex);
+
+    return application.getName().equals(myComboBox.getSelectedItem()) ? application : null;
   }
 }

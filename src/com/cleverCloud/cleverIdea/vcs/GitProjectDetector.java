@@ -11,6 +11,7 @@ import git4idea.repo.GitRemote;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryChangeListener;
 import git4idea.repo.GitRepositoryManager;
+import org.apache.batik.dom.util.HashTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +35,7 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
 
   @NotNull
   public ArrayList<Application> detect() {
-    ArrayList<Application> applicationList = getApplicationList(getAppIdList());
+    ArrayList<Application> applicationList = getApplicationList(getAppList());
     String remoteStringList = remoteListToString(applicationList);
     String content = remoteStringList == null
                      ? "No Clever Cloud application has been found in your remotes."
@@ -49,16 +50,21 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
     return applicationList;
   }
 
+  /**
+   * Find remote corresponding to a Clever Cloud app in the remotes of the current project.
+   *
+   * @return List of HashTable containing :  {"AppID" => String, "Repository" => GitRepository}
+   */
   @NotNull
-  public ArrayList<String> getAppIdList() {
-    ArrayList<String> appIdList = new ArrayList<>();
+  public ArrayList<HashTable> getAppList() {
+    ArrayList<HashTable> appIdList = new ArrayList<>();
     List<GitRepository> gitRepositoryList;
     gitRepositoryList = myGitRepositoryManager != null ? myGitRepositoryManager.getRepositories() : null;
 
     if (gitRepositoryList == null) return appIdList;
 
-    for (GitRepository aGitRepositoryList : gitRepositoryList) {
-      Collection<GitRemote> gitRemotes = aGitRepositoryList.getRemotes();
+    for (GitRepository aGitRepository : gitRepositoryList) {
+      Collection<GitRemote> gitRemotes = aGitRepository.getRemotes();
 
       for (GitRemote aGitRemote : gitRemotes) {
         List<String> remoteUrls = aGitRemote.getUrls();
@@ -67,7 +73,10 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
           Matcher matcher = pattern.matcher(anUrl);
 
           if (matcher.matches()) {
-            appIdList.add(matcher.group(1));
+            HashTable hashTable = new HashTable();
+            hashTable.put("AppID", matcher.group(1));
+            hashTable.put("Repository", aGitRepository);
+            appIdList.add(hashTable);
           }
         }
       }
@@ -76,19 +85,26 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
     return appIdList;
   }
 
+  /**
+   * Transform detected app in the project into Application list by getting info in the Clever Cloud API.
+   *
+   * @param appList List of HashTable containing : {"AppID" => String, "Repository" => GitRepository}
+   * @return ArrayList containing {@link com.cleverCloud.cleverIdea.api.json.Application} of the current project
+   */
   @NotNull
-  public ArrayList<Application> getApplicationList(@NotNull List<String> appIdList) {
+  public ArrayList<Application> getApplicationList(@NotNull List<HashTable> appList) {
     ArrayList<Application> applicationList = new ArrayList<>();
     CcApi ccApi = CcApi.getInstance(myProject);
 
-    for (String appId : appIdList) {
-      String response = ccApi.callApi(String.format("/self/applications/%s", appId));
+    for (HashTable app : appList) {
+      String response = ccApi.callApi(String.format("/self/applications/%s", app.get("AppID")));
 
       if (response != null) {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
           Application application = mapper.readValue(response, Application.class);
+          application.setRepository((GitRepository)app.get("Repository"));
           applicationList.add(application);
         }
         catch (IOException e) {
