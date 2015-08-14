@@ -3,6 +3,8 @@ package com.cleverCloud.cleverIdea.api;
 import org.jetbrains.annotations.NotNull;
 import org.scribe.builder.api.DefaultApi10a;
 import org.scribe.model.Token;
+import org.scribe.services.PlaintextSignatureService;
+import org.scribe.services.SignatureService;
 
 /**
  * Class representing the API used by Scribe to interact with the Clever Cloud API.
@@ -26,5 +28,11 @@ public class CleverCloudApi extends DefaultApi10a {
   @Override
   public String getAuthorizationUrl(@NotNull Token requestToken) {
     return String.format(AUTHORIZE_URL, requestToken.getToken());
+  }
+
+  @NotNull
+  @Override
+  public SignatureService getSignatureService() {
+    return new PlaintextSignatureService();
   }
 }
