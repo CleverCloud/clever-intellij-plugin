@@ -13,9 +13,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import git4idea.GitVcs;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
+import org.apache.batik.dom.util.HashTable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class CleverIdeaProjectComponent implements ProjectComponent {
   private Project myProject;
@@ -46,7 +47,7 @@ public class CleverIdeaProjectComponent implements ProjectComponent {
 
   @Override
   public void projectOpened() {
-    if (ServiceManager.getService(myProject, Settings.class).apps.isEmpty()) detectCleverApp();
+    if (ServiceManager.getService(myProject, Settings.class).applications.isEmpty()) detectCleverApp();
   }
 
   @Override
@@ -67,22 +68,22 @@ public class CleverIdeaProjectComponent implements ProjectComponent {
 
         if (repo != null) {
           GitProjectDetector gitProjectDetector = new GitProjectDetector(myProject);
-          List<String> appIdList = gitProjectDetector.getAppIdList();
+          ArrayList<HashTable> appList = gitProjectDetector.getAppList();
 
-          if (!appIdList.isEmpty()) {
+          if (!appList.isEmpty()) {
             Settings settings = ServiceManager.getService(myProject, Settings.class);
 
             new Notification("Vcs Important Messages", "Clever Cloud application detection", String.format(
               "The Clever IDEA plugin has detected that you have %d remotes pointing to Clever Cloud. " +
-              "<a href=\"\">Click here</a> to enable integration.", appIdList.size()), NotificationType.INFORMATION,
+              "<a href=\"\">Click here</a> to enable integration.", appList.size()), NotificationType.INFORMATION,
                              (notification, event) -> {
-                               settings.apps = gitProjectDetector.getApplicationList(appIdList);
+                               settings.applications = gitProjectDetector.getApplicationList(appList);
                                notification.expire();
                              }).notify(myProject);
 
             new Notification("Vcs Minor Notifications", "Applications successfully linked", String
               .format("The following Clever Cloud application have been linked successfully :<br />%s",
-                      gitProjectDetector.remoteListToString(settings.apps)), NotificationType.INFORMATION).notify(myProject);
+                      gitProjectDetector.remoteListToString(settings.applications)), NotificationType.INFORMATION).notify(myProject);
           }
         }
       }

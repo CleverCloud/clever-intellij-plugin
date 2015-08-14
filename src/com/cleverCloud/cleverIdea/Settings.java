@@ -14,7 +14,7 @@ import java.util.List;
   storages = {@Storage(id = "other", file = StoragePathMacros.PROJECT_FILE),
     @Storage(id = "dir", file = StoragePathMacros.PROJECT_CONFIG_DIR + "/cleverIdea.xml", scheme = StorageScheme.DIRECTORY_BASED)})
 public class Settings implements PersistentStateComponent<Settings> {
-  @NotNull public ArrayList<Application> apps = new ArrayList<>();
+  @NotNull public ArrayList<Application> applications = new ArrayList<>();
   @NotNull public String oAuthToken = "";
   @NotNull public String oAuthSecret = "";
 
