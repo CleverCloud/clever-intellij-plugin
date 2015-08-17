@@ -51,7 +51,7 @@
       <add-to-group group-id="VcsGroups"/>
       <action id="CleverCloud.AssociateProjectAction" class="com.cleverCloud.cleverIdea.action.AssociateProjectAction"
               text="Associate with project" description="Associate a project with a Clever Cloud application"/>
-      <action id="git4idea.push.DeployAction" class="git4idea.push.DeployAction"
+      <action id="com.cleverCloud.cleverIdea.action.DeployAction" class="git4idea.push.DeployAction"
               text="Deploy on Clever Cloud" description="Deploy your application on Clever Cloud"/>
     </group>
   </actions>

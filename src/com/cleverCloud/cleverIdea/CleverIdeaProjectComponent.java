@@ -10,6 +10,7 @@ import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vcs.impl.ProjectLevelVcsManagerImpl;
 import com.intellij.openapi.vcs.impl.VcsInitObject;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.xmlb.XmlSerializationException;
 import git4idea.GitVcs;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
@@ -47,7 +48,15 @@ public class CleverIdeaProjectComponent implements ProjectComponent {
 
   @Override
   public void projectOpened() {
-    if (ServiceManager.getService(myProject, Settings.class).applications.isEmpty()) detectCleverApp();
+    Settings settings = ServiceManager.getService(myProject, Settings.class);
+    try {
+      if (settings.applications.isEmpty()) {
+        detectCleverApp();
+      }
+    }
+    catch (XmlSerializationException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -79,11 +88,12 @@ public class CleverIdeaProjectComponent implements ProjectComponent {
                              (notification, event) -> {
                                settings.applications = gitProjectDetector.getApplicationList(appList);
                                notification.expire();
-                             }).notify(myProject);
 
-            new Notification("Vcs Minor Notifications", "Applications successfully linked", String
-              .format("The following Clever Cloud application have been linked successfully :<br />%s",
-                      gitProjectDetector.remoteListToString(settings.applications)), NotificationType.INFORMATION).notify(myProject);
+                               new Notification("Vcs Minor Notifications", "Applications successfully linked", String
+                                 .format("The following Clever Cloud application have been linked successfully :<br />%s",
+                                         gitProjectDetector.remoteListToString(settings.applications)), NotificationType.INFORMATION)
+                                 .notify(myProject);
+                             }).notify(myProject);
           }
         }
       }

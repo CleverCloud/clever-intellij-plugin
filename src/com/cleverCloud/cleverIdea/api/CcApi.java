@@ -94,6 +94,8 @@ public class CcApi {
       }
     }
 
+    System.out.println(accessToken);
+
     OAuthRequest request = new OAuthRequest(Verb.GET, CleverCloudApi.BASE_URL + url);
     service.signRequest(accessToken, request);
     return request.send().getBody();

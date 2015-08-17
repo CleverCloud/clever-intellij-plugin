@@ -75,7 +75,6 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
           if (matcher.matches()) {
             HashTable hashTable = new HashTable();
             hashTable.put("AppID", matcher.group(1));
-            hashTable.put("Repository", aGitRepository);
             appIdList.add(hashTable);
           }
         }
@@ -104,7 +103,6 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
 
         try {
           Application application = mapper.readValue(response, Application.class);
-          application.setRepository((GitRepository)app.get("Repository"));
           applicationList.add(application);
         }
         catch (IOException e) {

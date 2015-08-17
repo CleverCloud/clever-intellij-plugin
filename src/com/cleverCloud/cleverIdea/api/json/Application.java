@@ -7,7 +7,6 @@ import git4idea.repo.GitRepository;
 @JsonIgnoreProperties(value = {"myRemote"}, ignoreUnknown = true)
 public class Application extends CleverService {
   private ApplicationDeployment deployment;
-  private GitRepository myRepository;
   private Organisation parent;
 
   public Application() {
@@ -25,13 +24,5 @@ public class Application extends CleverService {
 
   public ApplicationDeployment getDeployment() {
     return this.deployment;
-  }
-
-  public GitRepository getRepository() {
-    return myRepository;
-  }
-
-  public void setRepository(GitRepository repository) {
-    myRepository = repository;
   }
 }
