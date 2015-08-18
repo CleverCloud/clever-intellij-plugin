@@ -17,13 +17,13 @@ public class Organisation extends CleverService {
   public Application[] getChildren(@NotNull Project project) {
     ObjectMapper mapper = new ObjectMapper();
     CcApi ccApi = ServiceManager.getService(project, CcApi.class);
-    String json = ccApi.callApi((this.getId().equals("self") ? "/" : "/organisations/") + this.getId() + "/applications");
+    String json = ccApi.callApi((id.equals("self") ? "/" : "/organisations/") + this.id + "/applications");
     Application[] children = null;
 
     try {
       children = mapper.readValue(json, Application[].class);
       for (Application app : children) {
-        app.setParent(this);
+        app.parent = this;
       }
     }
     catch (IOException e) {

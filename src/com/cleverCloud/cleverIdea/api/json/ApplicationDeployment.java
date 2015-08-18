@@ -1,18 +1,11 @@
 package com.cleverCloud.cleverIdea.api.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import git4idea.repo.GitRepository;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApplicationDeployment {
-
-  private String url;
-  private String type;
-
-  public String getUrl() {
-    return this.url;
-  }
-
-  public String getType() {
-    return this.type;
-  }
+  public String url;
+  public String type;
+  public GitRepository gitRepository;
 }
