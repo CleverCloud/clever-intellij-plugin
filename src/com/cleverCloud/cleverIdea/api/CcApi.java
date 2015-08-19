@@ -19,8 +19,8 @@ import org.scribe.oauth.OAuthService;
 public class CcApi {
   @Nullable private static CcApi ourInstance = null;
   private Project myProject;
-  @Nullable private Token accessToken;
-  private OAuthService service;
+  private Token myAccessToken;
+  @Nullable private OAuthService myService = null;
 
   /**
    * Return the instance of the API.
@@ -30,19 +30,15 @@ public class CcApi {
    */
   @NotNull
   public static CcApi getInstance(@NotNull Project project) {
-    if (ourInstance == null) {
-      ourInstance = new CcApi();
-    }
-
+    if (ourInstance == null) ourInstance = new CcApi();
     ourInstance.myProject = project;
-
     return ourInstance;
   }
 
   /**
    * Login to the CcApi. Required to call the API.
    *
-   * @return true if login success, false if login fail
+   * @return true if login succeed.
    */
   public boolean login() {
     @SuppressWarnings("SpellCheckingInspection") final String API_KEY = "JaGomLuixI29k62K9Zf9klIlQbZHdf";
@@ -50,17 +46,17 @@ public class CcApi {
     final String API_CALLBACK = "https://console.clever-cloud.com/cli-oauth";
     final Settings settings = ServiceManager.getService(myProject, Settings.class);
 
-    service = new ServiceBuilder().provider(CleverCloudApi.class).apiKey(API_KEY).apiSecret(API_SECRET).callback(API_CALLBACK).build();
+    myService = new ServiceBuilder().provider(CleverCloudApi.class).apiKey(API_KEY).apiSecret(API_SECRET).callback(API_CALLBACK).build();
 
     if (!settings.oAuthToken.isEmpty() && !settings.oAuthSecret.isEmpty()) {
-      accessToken = new Token(settings.oAuthToken, settings.oAuthSecret);
+      myAccessToken = new Token(settings.oAuthToken, settings.oAuthSecret);
       return true;
     }
 
     final CcApiLogin login = new CcApiLogin(myProject, API_CALLBACK);
 
     if (login.showAndGet()) {
-      this.accessToken = new Token(login.getToken(), login.getSecret());
+      this.myAccessToken = new Token(login.getToken(), login.getSecret());
       settings.oAuthToken = login.getToken();
       settings.oAuthSecret = login.getSecret();
       return true;
@@ -77,10 +73,10 @@ public class CcApi {
   }
 
   /**
-   * @return true if {@link CcApi#service} and {@link CcApi#accessToken} are defined.
+   * @return true if {@link CcApi#myService} and {@link CcApi#myAccessToken} are defined.
    */
   public boolean isValidate() {
-    return this.service != null && this.accessToken != null;
+    return this.myService != null && this.myAccessToken != null;
   }
 
   /**
@@ -99,8 +95,11 @@ public class CcApi {
     }
 
     OAuthRequest request = new OAuthRequest(Verb.GET, CleverCloudApi.BASE_URL + url);
-    service.signRequest(accessToken, request);
-    return request.send().getBody();
+    if (myService != null) {
+      myService.signRequest(myAccessToken, request);
+      return request.send().getBody();
+    }
+    return null;
   }
 
   private void callApiErrorNotification(String url) {
@@ -109,5 +108,4 @@ public class CcApi {
                        NotificationType.ERROR);
     notification.notify(myProject);
   }
-
 }
