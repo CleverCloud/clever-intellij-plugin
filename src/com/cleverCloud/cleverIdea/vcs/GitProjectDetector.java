@@ -1,5 +1,6 @@
 package com.cleverCloud.cleverIdea.vcs;
 
+import com.cleverCloud.cleverIdea.Settings;
 import com.cleverCloud.cleverIdea.api.CcApi;
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,13 +40,14 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
     String remoteStringList = remoteListToString(applicationList);
     String content = remoteStringList == null
                      ? "No Clever Cloud application has been found in your remotes."
-                     : String.format(
-                       "Clever IDEA has detected the following remotes corresponding to Clever Cloud applications :<br /><ul>%s</ul><br " +
-                       "/>You can push on one of this remotes using the \"Push on Clever Cloud\" action (VCS|Clever Cloud...).",
-                       remoteStringList);
+                     : "Clever IDEA has detected the following remotes corresponding to Clever Cloud applications :<ul>" +
+                       remoteStringList +
+                       "</ul>You can push on one of this remotes using the \"Push on Clever Cloud\" action (VCS|Clever Cloud...).";
 
     new Notification("Vcs Important Messages", "Clever Cloud application detection", content, NotificationType.INFORMATION)
       .notify(myProject);
+
+    ServiceManager.getService(myProject, Settings.class).applications = applicationList;
 
     return applicationList;
   }
@@ -74,7 +76,8 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
 
           if (matcher.matches()) {
             HashTable hashTable = new HashTable();
-            hashTable.put("AppID", matcher.group(1));
+            hashTable.put(AppInfos.APP_ID, matcher.group(1));
+            hashTable.put(AppInfos.REPOSITORY, aGitRepository.getGitDir().getParent().getPath());
             appIdList.add(hashTable);
           }
         }
@@ -88,7 +91,7 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
    * Transform detected app in the project into Application list by getting info in the Clever Cloud API.
    *
    * @param appList List of HashTable containing : {"AppID" => String, "Repository" => GitRepository}
-   * @return ArrayList containing {@link com.cleverCloud.cleverIdea.api.json.Application} of the current project
+   * @return ArrayList containing {@link Application} of the current project
    */
   @NotNull
   public ArrayList<Application> getApplicationList(@NotNull List<HashTable> appList) {
@@ -96,13 +99,14 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
     CcApi ccApi = CcApi.getInstance(myProject);
 
     for (HashTable app : appList) {
-      String response = ccApi.callApi(String.format("/self/applications/%s", app.get("AppID")));
+      String response = ccApi.callApi(String.format("/self/applications/%s", app.get(AppInfos.APP_ID)));
 
       if (response != null) {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
           Application application = mapper.readValue(response, Application.class);
+          application.deployment.repository = (String)app.get(AppInfos.REPOSITORY);
           applicationList.add(application);
         }
         catch (IOException e) {
@@ -111,6 +115,7 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
       }
     }
 
+    System.out.println(applicationList);
     return applicationList;
   }
 
@@ -120,8 +125,7 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
 
     String linkList = "";
     for (Application application : applications) {
-      // TODO : replace getName with remote name
-      linkList = linkList + String.format("<li>%s<br /></li>", application.getName());
+      linkList = linkList + String.format("<li>%s<br /></li>", application.name);
     }
 
     return linkList;
@@ -132,4 +136,8 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
     detect();
   }
 
+  private enum AppInfos {
+    APP_ID,
+    REPOSITORY
+  }
 }
