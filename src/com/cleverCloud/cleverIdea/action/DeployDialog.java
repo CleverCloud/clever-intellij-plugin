@@ -11,8 +11,7 @@ import java.util.List;
 
 public class DeployDialog extends DialogWrapper {
   private JPanel contentPane;
-  private JComboBox<String> myComboBox;
-  private List<Application> myApplications;
+  private JComboBox<Application> myComboBox;
 
   public DeployDialog(Project project, @NotNull List<Application> apps) {
     super(project);
@@ -28,12 +27,9 @@ public class DeployDialog extends DialogWrapper {
   }
 
   private void setComboBoxContent(@NotNull List<Application> applications) {
-    myApplications = applications;
 
     if (!applications.isEmpty()) {
-      for (Application app : applications) {
-        myComboBox.addItem(app.getName());
-      }
+      applications.forEach(myComboBox::addItem);
     }
   }
 
@@ -43,10 +39,8 @@ public class DeployDialog extends DialogWrapper {
     return myComboBox;
   }
 
-  public Application getApplicationSelected() {
-    int selectedIndex = myComboBox.getSelectedIndex();
-    Application application = myApplications.get(selectedIndex);
-
-    return application.getName().equals(myComboBox.getSelectedItem()) ? application : null;
+  @NotNull
+  public Application getSelectedItem() {
+    return (Application)myComboBox.getSelectedItem();
   }
 }
