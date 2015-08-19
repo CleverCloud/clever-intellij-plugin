@@ -40,9 +40,9 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
     String remoteStringList = remoteListToString(applicationList);
     String content = remoteStringList == null
                      ? "No Clever Cloud application has been found in your remotes."
-                     : "Clever IDEA has detected the following remotes corresponding to Clever Cloud applications :<ul>" +
-                       remoteStringList +
-                       "</ul>You can push on one of this remotes using the \"Push on Clever Cloud\" action (VCS|Clever Cloud...).";
+                     : String.format(
+                       "Clever IDEA has detected the following remotes corresponding to Clever Cloud applications :<ul>%s</ul>You can push on one of this remotes using VCS | Clever Cloud... | Push on Clever Cloud.",
+                       remoteStringList);
 
     new Notification("Vcs Important Messages", "Clever Cloud application detection", content, NotificationType.INFORMATION)
       .notify(myProject);
