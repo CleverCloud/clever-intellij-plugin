@@ -56,7 +56,7 @@ public class CcApi {
     final CcApiLogin login = new CcApiLogin(myProject, API_CALLBACK);
 
     if (login.showAndGet()) {
-      this.myAccessToken = new Token(login.getToken(), login.getSecret());
+      myAccessToken = new Token(login.getToken(), login.getSecret());
       settings.oAuthToken = login.getToken();
       settings.oAuthSecret = login.getSecret();
       return true;
