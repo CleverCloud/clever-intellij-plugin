@@ -91,7 +91,6 @@ public class DeployAction extends AnAction {
     Map<GitRepository, PushSpec<GitPushSource, GitPushTarget>> pushSpecs =
       Collections.singletonMap(repository, pushSourceGitPushTargetPushSpec);
 
-
     pushSupport.getPusher().push(pushSpecs, null, false);
   }
 

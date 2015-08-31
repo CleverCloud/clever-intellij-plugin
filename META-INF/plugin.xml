@@ -27,7 +27,7 @@
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
     <toolWindow id="CleverCloudLogs" anchor="bottom" secondary="false"
-                factoryClass="com.cleverCloud.cleverIdea.toolWindow.CcLogsToolWindowFactory"/>
+                factoryClass="com.cleverCloud.cleverIdea.toolWindow.CcLogsToolWindowFactory" icon="/clever-icon-13.jpg"/>
     <projectService serviceInterface="com.cleverCloud.cleverIdea.Settings" serviceImplementation="com.cleverCloud.cleverIdea.Settings"/>
     <projectService serviceInterface="com.cleverCloud.cleverIdea.vcs.GitProjectDetector"
                     serviceImplementation="com.cleverCloud.cleverIdea.vcs.GitProjectDetector"/>
@@ -47,7 +47,7 @@
   <actions>
     <!-- Add your actions here -->
     <group id="CleverCloud" description="Clever Cloud ..."
-           text="Clever Cloud ..." icon="/favicon.png" popup="true">
+           text="Clever Cloud ..." icon="/clever-icon-16.jpg" popup="true">
       <add-to-group group-id="VcsGroups"/>
       <action id="CleverCloud.AssociateProjectAction" class="com.cleverCloud.cleverIdea.action.AssociateProjectAction"
               text="Associate with project" description="Associate a project with a Clever Cloud application"/>
