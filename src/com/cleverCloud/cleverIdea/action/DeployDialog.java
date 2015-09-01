@@ -13,11 +13,12 @@ public class DeployDialog extends DialogWrapper {
   private JPanel contentPane;
   private JComboBox<Application> myComboBox;
 
-  public DeployDialog(Project project, @NotNull List<Application> apps) {
+  public DeployDialog(Project project, @NotNull List<Application> apps, Application lastApplication) {
     super(project);
     init();
     setTitle("Choose Application to Deploy");
     setComboBoxContent(apps);
+    myComboBox.setSelectedItem(lastApplication);
   }
 
   @Nullable

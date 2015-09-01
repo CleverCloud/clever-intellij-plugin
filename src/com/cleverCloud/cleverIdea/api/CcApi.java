@@ -1,6 +1,9 @@
 package com.cleverCloud.cleverIdea.api;
 
 import com.cleverCloud.cleverIdea.Settings;
+import com.cleverCloud.cleverIdea.api.json.WebSocket;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.components.ServiceManager;
@@ -9,9 +12,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
+
+import java.io.IOException;
+import java.io.StringWriter;
 
 /**
  * Main class used to interact with th API
@@ -79,14 +86,8 @@ public class CcApi {
     return this.myService != null && this.myAccessToken != null;
   }
 
-  /**
-   * Call directly the API.
-   *
-   * @param url to call in the API. Should be the complete URL, with parameters.
-   * @return body of the response of the API
-   */
   @Nullable
-  public String callApi(@NotNull String url) {
+  public String apiRequest(@NotNull String url) {
     if (!isValidate()) {
       if (!login()) {
         callApiErrorNotification(url);
@@ -95,11 +96,9 @@ public class CcApi {
     }
 
     OAuthRequest request = new OAuthRequest(Verb.GET, CleverCloudApi.BASE_URL + url);
-    if (myService != null) {
-      myService.signRequest(myAccessToken, request);
-      return request.send().getBody();
-    }
-    return null;
+    assert myService != null;
+    myService.signRequest(myAccessToken, request);
+    return request.send().getBody();
   }
 
   private void callApiErrorNotification(String url) {
@@ -107,5 +106,41 @@ public class CcApi {
       new Notification("Error Report", "Clever IDEA - Request error", "The following request cannot be executed :<br />" + url,
                        NotificationType.ERROR);
     notification.notify(myProject);
+  }
+
+  public String logRequest() {
+    if (!isValidate()) {
+      if (!login()) {
+        return null;
+      }
+    }
+
+    Settings settings = ServiceManager.getService(this.myProject, Settings.class);
+    OAuthRequest request = new OAuthRequest(Verb.GET, CleverCloudApi.LOGS_URL + settings.lastUsedApplication.id + "?limit=" +
+                                                      Integer.toString(CleverCloudApi.LOG_LIMIT));
+    assert myService != null;
+    myService.signRequest(myAccessToken, request);
+    Response response = request.send();
+    return response.getBody();
+  }
+
+  public String wsLogSigner() {
+    OAuthRequest request = new OAuthRequest(Verb.GET, CleverCloudApi.BASE_URL);
+    assert myService != null;
+    myService.signRequest(myAccessToken, request);
+    WebSocket ws = new WebSocket(request.getHeaders().toString().replace("{Authorization=", "").replace("}", ""));
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.configure(SerializationFeature.INDENT_OUTPUT, false);
+    StringWriter writer = new StringWriter();
+
+    try {
+      mapper.writeValue(writer, ws);
+      return writer.toString();
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return null;
   }
 }

@@ -99,7 +99,7 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
     CcApi ccApi = CcApi.getInstance(myProject);
 
     for (HashTable app : appList) {
-      String response = ccApi.callApi(String.format("/self/applications/%s", app.get(AppInfos.APP_ID)));
+      String response = ccApi.apiRequest(String.format("/self/applications/%s", app.get(AppInfos.APP_ID)));
 
       if (response != null) {
         ObjectMapper mapper = new ObjectMapper();

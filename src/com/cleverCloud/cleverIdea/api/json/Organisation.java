@@ -17,7 +17,7 @@ public class Organisation extends CleverService {
   public Application[] getChildren(@NotNull Project project) {
     ObjectMapper mapper = new ObjectMapper();
     CcApi ccApi = ServiceManager.getService(project, CcApi.class);
-    String json = ccApi.callApi((id.equals("self") ? "/" : "/organisations/") + this.id + "/applications");
+    String json = ccApi.apiRequest((id.equals("self") ? "/" : "/organisations/") + this.id + "/applications");
     Application[] children = null;
 
     try {

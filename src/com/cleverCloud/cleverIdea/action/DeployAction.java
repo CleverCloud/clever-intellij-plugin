@@ -1,7 +1,6 @@
 package com.cleverCloud.cleverIdea.action;
 
 import com.cleverCloud.cleverIdea.Settings;
-import com.cleverCloud.cleverIdea.action.DeployDialog;
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.intellij.dvcs.DvcsUtil;
 import com.intellij.dvcs.push.PushSpec;
@@ -21,7 +20,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import git4idea.GitBranch;
 import git4idea.GitRemoteBranch;
 import git4idea.GitStandardRemoteBranch;
-import git4idea.GitVcs;
 import git4idea.push.GitPushSource;
 import git4idea.push.GitPushSupport;
 import git4idea.push.GitPushTarget;
@@ -45,11 +43,15 @@ public class DeployAction extends AnAction {
     ArrayList<Application> applications = settings.applications;
 
     if (applications.isEmpty()) {
-      notifyNoApplication(e.getProject());
+      new Notification("Vcs Important Messages", "No application available",
+                       "No Clever Cloud application is associated with the project. Run \"VCS |Clever Cloud ... | Associate with project\" to ssociate an application with the project.",
+                       NotificationType.ERROR).notify(e.getProject());
       return;
     }
 
-    DeployDialog dialog = new DeployDialog(e.getProject(), applications);
+    Application lastApplication = settings.lastUsedApplication;
+    if (!applications.contains(lastApplication)) lastApplication = settings.lastUsedApplication = null;
+    DeployDialog dialog = new DeployDialog(e.getProject(), applications, lastApplication);
 
     if (dialog.showAndGet()) {
       ProgressManager.getInstance().run(new Task.Backgroundable(e.getProject(), "Push on Clever Cloud", true) {
@@ -58,13 +60,8 @@ public class DeployAction extends AnAction {
           pushOnClever(dialog, e.getProject());
         }
       });
+      settings.lastUsedApplication = dialog.getSelectedItem();
     }
-  }
-
-  private void notifyNoApplication(Project project) {
-    new Notification("Vcs Important Messages", "No application available",
-                     "No Clever Cloud application is associated with the project. Run \"VCS |Clever Cloud ... | Associate with project\" to ssociate an application with the project.",
-                     NotificationType.ERROR).notify(project);
   }
 
   private void pushOnClever(@NotNull DeployDialog dialog, @NotNull Project project) {
@@ -75,7 +72,7 @@ public class DeployAction extends AnAction {
     GitRepository repository = repositoryManager.getRepositoryForRoot(gitRoot);
     if (repository == null) return;
 
-    GitRemote remote = getRemote(repository.getRemotes(), application.deployment.url);
+    GitRemote remote = getRemote(repository.getRemotes(), application.deployment.url, project);
     if (remote == null) return;
     GitRemoteBranch branch = getBranch(repository, remote);
 
@@ -94,7 +91,7 @@ public class DeployAction extends AnAction {
     pushSupport.getPusher().push(pushSpecs, null, false);
   }
 
-  private GitRemote getRemote(@NotNull Collection<GitRemote> gitRemoteCollections, String remoteUrl) {
+  private GitRemote getRemote(@NotNull Collection<GitRemote> gitRemoteCollections, String remoteUrl, Project project) {
     for (GitRemote gitRemote : gitRemoteCollections) {
       int remoteIndex = gitRemote.getUrls().indexOf(remoteUrl);
       if (remoteIndex != -1) {
