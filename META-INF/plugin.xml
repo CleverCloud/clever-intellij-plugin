@@ -26,7 +26,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-    <toolWindow id="CleverCloudLogs" anchor="bottom" secondary="false"
+    <toolWindow id="Logs Clever Cloud" anchor="bottom" secondary="false"
                 factoryClass="com.cleverCloud.cleverIdea.toolWindow.CcLogsToolWindowFactory" icon="/clever-icon-13.jpg"/>
     <projectService serviceInterface="com.cleverCloud.cleverIdea.Settings" serviceImplementation="com.cleverCloud.cleverIdea.Settings"/>
     <projectService serviceInterface="com.cleverCloud.cleverIdea.vcs.GitProjectDetector"

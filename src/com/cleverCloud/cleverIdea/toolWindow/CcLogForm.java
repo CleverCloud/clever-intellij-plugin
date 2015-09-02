@@ -1,16 +1,18 @@
 package com.cleverCloud.cleverIdea.toolWindow;
 
+import com.intellij.ui.EditorTextField;
+
 import javax.swing.*;
 
 public class CcLogForm {
-  private JTextPane myTextPane1;
-  private JPanel myPanel1;
+  private JPanel myPanel;
+  private EditorTextField myEditor;
 
-  public JTextPane getTextPane1() {
-    return myTextPane1;
+  public JPanel getPanel() {
+    return myPanel;
   }
 
-  public JPanel getPanel1() {
-    return myPanel1;
+  public EditorTextField getEditor() {
+    return myEditor;
   }
 }

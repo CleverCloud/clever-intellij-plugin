@@ -1,5 +1,6 @@
 package com.cleverCloud.cleverIdea.action;
 
+import com.cleverCloud.cleverIdea.SelectApplication;
 import com.cleverCloud.cleverIdea.Settings;
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.intellij.dvcs.DvcsUtil;
@@ -51,7 +52,7 @@ public class DeployAction extends AnAction {
 
     Application lastApplication = settings.lastUsedApplication;
     if (!applications.contains(lastApplication)) lastApplication = settings.lastUsedApplication = null;
-    DeployDialog dialog = new DeployDialog(e.getProject(), applications, lastApplication);
+    SelectApplication dialog = new SelectApplication(e.getProject(), applications, lastApplication);
 
     if (dialog.showAndGet()) {
       ProgressManager.getInstance().run(new Task.Backgroundable(e.getProject(), "Push on Clever Cloud", true) {
@@ -64,7 +65,7 @@ public class DeployAction extends AnAction {
     }
   }
 
-  private void pushOnClever(@NotNull DeployDialog dialog, @NotNull Project project) {
+  private void pushOnClever(@NotNull SelectApplication dialog, @NotNull Project project) {
     Application application = dialog.getSelectedItem();
     VirtualFile gitRoot = LocalFileSystem.getInstance().findFileByIoFile(new File(application.deployment.repository));
     assert gitRoot != null;
@@ -72,7 +73,7 @@ public class DeployAction extends AnAction {
     GitRepository repository = repositoryManager.getRepositoryForRoot(gitRoot);
     if (repository == null) return;
 
-    GitRemote remote = getRemote(repository.getRemotes(), application.deployment.url, project);
+    GitRemote remote = getRemote(repository.getRemotes(), application.deployment.url);
     if (remote == null) return;
     GitRemoteBranch branch = getBranch(repository, remote);
 
@@ -91,7 +92,7 @@ public class DeployAction extends AnAction {
     pushSupport.getPusher().push(pushSpecs, null, false);
   }
 
-  private GitRemote getRemote(@NotNull Collection<GitRemote> gitRemoteCollections, String remoteUrl, Project project) {
+  private GitRemote getRemote(@NotNull Collection<GitRemote> gitRemoteCollections, String remoteUrl) {
     for (GitRemote gitRemote : gitRemoteCollections) {
       int remoteIndex = gitRemote.getUrls().indexOf(remoteUrl);
       if (remoteIndex != -1) {
@@ -110,7 +111,7 @@ public class DeployAction extends AnAction {
   }
 
   @Override
-  public void update(AnActionEvent e) {
+  public void update(@NotNull AnActionEvent e) {
     if (e.getProject() == null) {
       e.getPresentation().setEnabledAndVisible(false);
       return;

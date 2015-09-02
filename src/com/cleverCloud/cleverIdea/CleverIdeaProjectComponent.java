@@ -20,9 +20,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class CleverIdeaProjectComponent implements ProjectComponent {
-  private Project myProject;
-  private ProjectLevelVcsManager myProjectLevelVcsManager;
-  private GitRepositoryManager myGitRepositoryManager;
+  private final Project myProject;
+  private final ProjectLevelVcsManager myProjectLevelVcsManager;
+  private final GitRepositoryManager myGitRepositoryManager;
 
   public CleverIdeaProjectComponent(Project project,
                                     ProjectLevelVcsManager projectLevelVcsManager,

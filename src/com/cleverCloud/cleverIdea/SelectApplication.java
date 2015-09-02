@@ -1,4 +1,4 @@
-package com.cleverCloud.cleverIdea.action;
+package com.cleverCloud.cleverIdea;
 
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.intellij.openapi.project.Project;
@@ -9,16 +9,16 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.List;
 
-public class DeployDialog extends DialogWrapper {
+public class SelectApplication extends DialogWrapper {
   private JPanel contentPane;
   private JComboBox<Application> myComboBox;
 
-  public DeployDialog(Project project, @NotNull List<Application> apps, Application lastApplication) {
+  public SelectApplication(@NotNull Project project, @NotNull List<Application> apps, @Nullable Application lastApplication) {
     super(project);
     init();
-    setTitle("Choose Application to Deploy");
+    setTitle("Choose Application to Use");
     setComboBoxContent(apps);
-    myComboBox.setSelectedItem(lastApplication);
+    if (lastApplication != null) myComboBox.setSelectedItem(lastApplication);
   }
 
   @Nullable

@@ -1,7 +1,9 @@
 package com.cleverCloud.cleverIdea.api.json;
 
+import org.jetbrains.annotations.NotNull;
+
 public class WebSocket {
-  public String message_type = "oauth";
+  @NotNull public String message_type = "oauth";
   public String authorization;
 
   public WebSocket(String authorization) {

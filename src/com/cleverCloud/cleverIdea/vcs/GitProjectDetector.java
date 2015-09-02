@@ -24,18 +24,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GitProjectDetector implements GitRepositoryChangeListener {
-  @NotNull private Pattern pattern =
+  @NotNull private final Pattern pattern =
     Pattern.compile("^git\\+ssh://git@push\\.[\\w]{3}\\.clever-cloud\\.com/(app_([a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}))\\.git$");
+  private final Project myProject;
   @Nullable private GitRepositoryManager myGitRepositoryManager = null;
-  private Project myProject;
 
   public GitProjectDetector(Project project) {
     myProject = project;
     if (myGitRepositoryManager == null) myGitRepositoryManager = ServiceManager.getService(myProject, GitRepositoryManager.class);
   }
 
-  @NotNull
-  public ArrayList<Application> detect() {
+  public void detect() {
     ArrayList<Application> applicationList = getApplicationList(getAppList());
     String remoteStringList = remoteListToString(applicationList);
     String content = remoteStringList == null
@@ -48,8 +47,6 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
       .notify(myProject);
 
     ServiceManager.getService(myProject, Settings.class).applications = applicationList;
-
-    return applicationList;
   }
 
   /**

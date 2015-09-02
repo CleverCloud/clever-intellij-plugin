@@ -1,6 +1,8 @@
 package com.cleverCloud.cleverIdea.api;
 
+import com.cleverCloud.cleverIdea.SelectApplication;
 import com.cleverCloud.cleverIdea.Settings;
+import com.cleverCloud.cleverIdea.api.json.Application;
 import com.cleverCloud.cleverIdea.api.json.WebSocket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -47,7 +49,7 @@ public class CcApi {
    *
    * @return true if login succeed.
    */
-  public boolean login() {
+  private boolean login() {
     @SuppressWarnings("SpellCheckingInspection") final String API_KEY = "JaGomLuixI29k62K9Zf9klIlQbZHdf";
     @SuppressWarnings("SpellCheckingInspection") final String API_SECRET = "KRP5Ckc0CKXRBE0QsmmHX3nVG8n5Mu";
     final String API_CALLBACK = "https://console.clever-cloud.com/cli-oauth";
@@ -82,7 +84,7 @@ public class CcApi {
   /**
    * @return true if {@link CcApi#myService} and {@link CcApi#myAccessToken} are defined.
    */
-  public boolean isValidate() {
+  private boolean isValidate() {
     return this.myService != null && this.myAccessToken != null;
   }
 
@@ -108,23 +110,34 @@ public class CcApi {
     notification.notify(myProject);
   }
 
+  @Nullable
   public String logRequest() {
+    Settings settings = ServiceManager.getService(this.myProject, Settings.class);
+    Application application = settings.lastUsedApplication;
+    if (application == null) {
+      SelectApplication selectApplication = new SelectApplication(myProject, settings.applications, null);
+      if (selectApplication.showAndGet()) application = selectApplication.getSelectedItem();
+    }
+
+    assert application != null;
+    OAuthRequest request =
+      new OAuthRequest(Verb.GET, CleverCloudApi.LOGS_URL + application.id + "?limit=" + Integer.toString(CleverCloudApi.LOG_LIMIT));
+
+    assert myService != null;
+    myService.signRequest(myAccessToken, request);
+    Response response = request.send();
+
+    return response.getBody();
+  }
+
+  @Nullable
+  public String wsLogSigner() {
     if (!isValidate()) {
       if (!login()) {
         return null;
       }
     }
 
-    Settings settings = ServiceManager.getService(this.myProject, Settings.class);
-    OAuthRequest request = new OAuthRequest(Verb.GET, CleverCloudApi.LOGS_URL + settings.lastUsedApplication.id + "?limit=" +
-                                                      Integer.toString(CleverCloudApi.LOG_LIMIT));
-    assert myService != null;
-    myService.signRequest(myAccessToken, request);
-    Response response = request.send();
-    return response.getBody();
-  }
-
-  public String wsLogSigner() {
     OAuthRequest request = new OAuthRequest(Verb.GET, CleverCloudApi.BASE_URL);
     assert myService != null;
     myService.signRequest(myAccessToken, request);
