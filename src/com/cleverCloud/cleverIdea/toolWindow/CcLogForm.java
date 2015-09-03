@@ -7,6 +7,7 @@ import javax.swing.*;
 public class CcLogForm {
   private JPanel myPanel;
   private EditorTextField myEditor;
+  private JScrollBar myScrollBar1;
 
   public JPanel getPanel() {
     return myPanel;
