@@ -1,4 +1,4 @@
-package com.cleverCloud.cleverIdea.api;
+package com.cleverCloud.cleverIdea.ui;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;

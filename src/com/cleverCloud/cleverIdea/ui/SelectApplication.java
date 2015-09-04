@@ -1,4 +1,4 @@
-package com.cleverCloud.cleverIdea;
+package com.cleverCloud.cleverIdea.ui;
 
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.intellij.openapi.project.Project;

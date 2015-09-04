@@ -1,9 +1,10 @@
 package com.cleverCloud.cleverIdea.api;
 
-import com.cleverCloud.cleverIdea.SelectApplication;
 import com.cleverCloud.cleverIdea.Settings;
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.cleverCloud.cleverIdea.api.json.WebSocket;
+import com.cleverCloud.cleverIdea.ui.CcApiLogin;
+import com.cleverCloud.cleverIdea.ui.SelectApplication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.intellij.notification.Notification;

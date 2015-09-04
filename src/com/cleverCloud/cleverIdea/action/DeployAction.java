@@ -1,8 +1,8 @@
 package com.cleverCloud.cleverIdea.action;
 
-import com.cleverCloud.cleverIdea.SelectApplication;
 import com.cleverCloud.cleverIdea.Settings;
 import com.cleverCloud.cleverIdea.api.json.Application;
+import com.cleverCloud.cleverIdea.ui.SelectApplication;
 import com.intellij.dvcs.DvcsUtil;
 import com.intellij.dvcs.push.PushSpec;
 import com.intellij.notification.Notification;
@@ -45,7 +45,7 @@ public class DeployAction extends AnAction {
 
     if (applications.isEmpty()) {
       new Notification("Vcs Important Messages", "No application available",
-                       "No Clever Cloud application is associated with the project. Run \"VCS |Clever Cloud ... | Associate with project\" to ssociate an application with the project.",
+                       "No Clever Cloud application is associated with the project. Run \"VCS | Clever Cloud ... | Associate with project\" to ssociate an application with the project.",
                        NotificationType.ERROR).notify(e.getProject());
       return;
     }

@@ -1,10 +1,11 @@
 package com.cleverCloud.cleverIdea.toolWindow;
 
-import com.cleverCloud.cleverIdea.SelectApplication;
 import com.cleverCloud.cleverIdea.Settings;
 import com.cleverCloud.cleverIdea.api.CcApi;
 import com.cleverCloud.cleverIdea.api.CleverCloudApi;
 import com.cleverCloud.cleverIdea.api.json.Application;
+import com.cleverCloud.cleverIdea.ui.CcLogForm;
+import com.cleverCloud.cleverIdea.ui.SelectApplication;
 import com.cleverCloud.cleverIdea.utils.WebSocketCore;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Editor;
