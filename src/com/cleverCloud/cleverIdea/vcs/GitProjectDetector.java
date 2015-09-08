@@ -1,6 +1,6 @@
 package com.cleverCloud.cleverIdea.vcs;
 
-import com.cleverCloud.cleverIdea.Settings;
+import com.cleverCloud.cleverIdea.ProjectSettings;
 import com.cleverCloud.cleverIdea.api.CcApi;
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,7 +46,7 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
     new Notification("Vcs Important Messages", "Clever Cloud application detection", content, NotificationType.INFORMATION)
       .notify(myProject);
 
-    ServiceManager.getService(myProject, Settings.class).applications = applicationList;
+    ServiceManager.getService(myProject, ProjectSettings.class).applications = applicationList;
   }
 
   /**

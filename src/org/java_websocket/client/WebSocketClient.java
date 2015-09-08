@@ -1,26 +1,7 @@
 package org.java_websocket.client;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.nio.ByteBuffer;
-import java.nio.channels.ByteChannel;
-import java.nio.channels.CancelledKeyException;
-import java.nio.channels.ClosedByInterruptException;
-import java.nio.channels.NotYetConnectedException;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.SocketChannel;
-import java.nio.channels.spi.SelectorProvider;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-
-import org.java_websocket.SocketChannelIOHelper;
-import org.java_websocket.WebSocket;
+import org.java_websocket.*;
 import org.java_websocket.WebSocket.READYSTATE;
-import org.java_websocket.WebSocketAdapter;
-import org.java_websocket.WebSocketFactory;
-import org.java_websocket.WebSocketImpl;
-import org.java_websocket.WrappedByteChannel;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_10;
 import org.java_websocket.exceptions.InvalidHandshakeException;
@@ -28,6 +9,17 @@ import org.java_websocket.framing.CloseFrame;
 import org.java_websocket.handshake.HandshakeImpl1Client;
 import org.java_websocket.handshake.Handshakedata;
 import org.java_websocket.handshake.ServerHandshake;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.nio.ByteBuffer;
+import java.nio.channels.*;
+import java.nio.channels.spi.SelectorProvider;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * The <tt>WebSocketClient</tt> is an abstract class that expects a valid
@@ -48,34 +40,34 @@ public abstract class WebSocketClient extends WebSocketAdapter implements Runnab
   /**
    * The URI this channel is supposed to connect to.
    */
-  protected URI uri = null;
+  @Nullable protected URI uri = null;
 
-  private WebSocketImpl conn = null;
+  @Nullable private WebSocketImpl conn = null;
   /**
    * The SocketChannel instance this channel uses.
    */
-  private SocketChannel channel = null;
+  @Nullable private SocketChannel channel = null;
 
-  private ByteChannel wrappedchannel = null;
+  @Nullable private ByteChannel wrappedchannel = null;
 
   private Thread writethread;
 
   private Thread readthread;
 
-  private Draft draft;
+  @Nullable private Draft draft;
 
   private Map<String,String> headers;
 
-  private CountDownLatch connectLatch = new CountDownLatch( 1 );
+  @NotNull private CountDownLatch connectLatch = new CountDownLatch(1);
 
-  private CountDownLatch closeLatch = new CountDownLatch( 1 );
+  @NotNull private CountDownLatch closeLatch = new CountDownLatch(1);
 
   @SuppressWarnings("unused")
   private int timeout = 0;
 
   private WebSocketClientFactory wsfactory = new DefaultWebSocketClientFactory( this );
 
-  private InetSocketAddress proxyAddress = null;
+  @Nullable private InetSocketAddress proxyAddress = null;
 
   public WebSocketClient( URI serverURI ) {
     this( serverURI, new Draft_10() );
@@ -90,7 +82,7 @@ public abstract class WebSocketClient extends WebSocketAdapter implements Runnab
     this( serverUri, draft, null, 0 );
   }
 
-  public WebSocketClient( URI serverUri , Draft draft , Map<String,String> headers , int connecttimeout ) {
+  public WebSocketClient(@Nullable URI serverUri, @Nullable Draft draft, Map<String, String> headers, int connecttimeout) {
     if( serverUri == null ) {
       throw new IllegalArgumentException();
     }
@@ -124,11 +116,13 @@ public abstract class WebSocketClient extends WebSocketAdapter implements Runnab
    *
    * @return The <tt>URI</tt> for this WebSocketClient.
    */
+  @Nullable
   public URI getURI() {
     return uri;
   }
 
   /** Returns the protocol version this channel uses. */
+  @Nullable
   public Draft getDraft() {
     return draft;
   }
@@ -172,7 +166,7 @@ public abstract class WebSocketClient extends WebSocketAdapter implements Runnab
    * @param text
    *            The String to send to the WebSocket server.
    */
-  public void send( String text ) throws NotYetConnectedException {
+  public void send(@NotNull String text) throws NotYetConnectedException {
     conn.send( text );
   }
 
@@ -182,7 +176,7 @@ public abstract class WebSocketClient extends WebSocketAdapter implements Runnab
    * @param data
    *            The Byte-Array of data to send to the WebSocket server.
    */
-  public void send( byte[] data ) throws NotYetConnectedException {
+  public void send(@NotNull byte[] data) throws NotYetConnectedException {
     conn.send( data );
   }
 
@@ -378,18 +372,20 @@ public abstract class WebSocketClient extends WebSocketAdapter implements Runnab
   public void onClosing( int code, String reason, boolean remote ) {
   }
 
+  @Nullable
   public WebSocket getConnection() {
     return conn;
-  }
-
-  public final void setWebSocketFactory( WebSocketClientFactory wsf ) {
-    this.wsfactory = wsf;
   }
 
   public final WebSocketFactory getWebSocketFactory() {
     return wsfactory;
   }
 
+  public final void setWebSocketFactory(WebSocketClientFactory wsf) {
+    this.wsfactory = wsf;
+  }
+
+  @Nullable
   @Override
   public InetSocketAddress getLocalSocketAddress( WebSocket conn ) {
     if( channel != null )
@@ -397,6 +393,7 @@ public abstract class WebSocketClient extends WebSocketAdapter implements Runnab
     return null;
   }
 
+  @Nullable
   @Override
   public InetSocketAddress getRemoteSocketAddress( WebSocket conn ) {
     if( channel != null )
@@ -412,10 +409,28 @@ public abstract class WebSocketClient extends WebSocketAdapter implements Runnab
   public void onMessage( ByteBuffer bytes ) {
   };
 
+  public ByteChannel createProxyChannel(ByteChannel towrap) {
+    if (proxyAddress != null) {
+      return new DefaultClientProxyChannel(towrap);
+    }
+    return towrap;//no proxy in use
+  }
+
+  public void setProxy(InetSocketAddress proxyaddress) {
+    proxyAddress = proxyaddress;
+  }
+
+  public interface WebSocketClientFactory extends WebSocketFactory {
+    @NotNull
+    public ByteChannel wrapChannel(SocketChannel channel, SelectionKey key, String host, int port) throws IOException;
+  }
+
   public class DefaultClientProxyChannel extends AbstractClientProxyChannel {
     public DefaultClientProxyChannel( ByteChannel towrap ) {
       super( towrap );
     }
+
+    @NotNull
     @Override
     public String buildHandShake() {
       StringBuilder b = new StringBuilder();
@@ -432,10 +447,6 @@ public abstract class WebSocketClient extends WebSocketAdapter implements Runnab
     }
   }
 
-  public interface WebSocketClientFactory extends WebSocketFactory {
-    public ByteChannel wrapChannel( SocketChannel channel, SelectionKey key, String host, int port ) throws IOException;
-  }
-
   private class WebsocketWriteThread implements Runnable {
     @Override
     public void run() {
@@ -450,16 +461,5 @@ public abstract class WebSocketClient extends WebSocketAdapter implements Runnab
         // this thread is regularly terminated via an interrupt
       }
     }
-  }
-
-  public ByteChannel createProxyChannel( ByteChannel towrap ) {
-    if( proxyAddress != null ){
-      return new DefaultClientProxyChannel( towrap );
-    }
-    return towrap;//no proxy in use
-  }
-
-  public void setProxy( InetSocketAddress proxyaddress ) {
-    proxyAddress = proxyaddress;
   }
 }

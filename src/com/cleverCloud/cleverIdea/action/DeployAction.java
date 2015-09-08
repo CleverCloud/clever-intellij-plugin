@@ -1,6 +1,6 @@
 package com.cleverCloud.cleverIdea.action;
 
-import com.cleverCloud.cleverIdea.Settings;
+import com.cleverCloud.cleverIdea.ProjectSettings;
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.cleverCloud.cleverIdea.ui.SelectApplication;
 import com.intellij.dvcs.DvcsUtil;
@@ -40,8 +40,8 @@ public class DeployAction extends AnAction {
   public void actionPerformed(@NotNull AnActionEvent e) {
     if (e.getProject() == null) return;
 
-    Settings settings = ServiceManager.getService(e.getProject(), Settings.class);
-    ArrayList<Application> applications = settings.applications;
+    ProjectSettings projectSettings = ServiceManager.getService(e.getProject(), ProjectSettings.class);
+    ArrayList<Application> applications = projectSettings.applications;
 
     if (applications.isEmpty()) {
       new Notification("Vcs Important Messages", "No application available",
@@ -50,8 +50,8 @@ public class DeployAction extends AnAction {
       return;
     }
 
-    Application lastApplication = settings.lastUsedApplication;
-    if (!applications.contains(lastApplication)) lastApplication = settings.lastUsedApplication = null;
+    Application lastApplication = projectSettings.lastUsedApplication;
+    if (!applications.contains(lastApplication)) lastApplication = projectSettings.lastUsedApplication = null;
     SelectApplication dialog = new SelectApplication(e.getProject(), applications, lastApplication);
 
     if (dialog.showAndGet()) {
@@ -61,7 +61,7 @@ public class DeployAction extends AnAction {
           pushOnClever(dialog, e.getProject());
         }
       });
-      settings.lastUsedApplication = dialog.getSelectedItem();
+      projectSettings.lastUsedApplication = dialog.getSelectedItem();
     }
   }
 
@@ -117,8 +117,8 @@ public class DeployAction extends AnAction {
       return;
     }
 
-    Settings settings = ServiceManager.getService(e.getProject(), Settings.class);
-    if (settings.applications.isEmpty()) {
+    ProjectSettings projectSettings = ServiceManager.getService(e.getProject(), ProjectSettings.class);
+    if (projectSettings.applications.isEmpty()) {
       e.getPresentation().setEnabled(false);
       return;
     }

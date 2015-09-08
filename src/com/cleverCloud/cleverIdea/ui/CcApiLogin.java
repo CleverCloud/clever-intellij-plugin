@@ -33,8 +33,14 @@ public class CcApiLogin extends DialogWrapper {
   private void openBrowser(@NotNull String address) {
     Desktop desktop = Desktop.getDesktop();
     try {
-      URI uri = new URI(address);
-      desktop.browse(uri);
+      if (desktop.isSupported(Desktop.Action.BROWSE)) {
+        URI uri = new URI(address);
+        desktop.browse(uri);
+      }
+      else {
+        // TODO : find why it happens
+        System.out.println("Browse action isn't supported");
+      }
       init();
       setTitle("Login");
     }

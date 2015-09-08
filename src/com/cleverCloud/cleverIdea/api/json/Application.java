@@ -14,6 +14,13 @@ public class Application extends CleverService {
 
   @Override
   public String toString() {
+    String name;
+    if (!"self".equals(parent.id)) {
+      name = this.parent.name + " / " + this.name;
+    }
+    else {
+      name = this.name;
+    }
     return name;
   }
 }

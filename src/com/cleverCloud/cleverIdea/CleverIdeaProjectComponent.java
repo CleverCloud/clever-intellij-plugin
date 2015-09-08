@@ -48,9 +48,9 @@ public class CleverIdeaProjectComponent implements ProjectComponent {
 
   @Override
   public void projectOpened() {
-    Settings settings = ServiceManager.getService(myProject, Settings.class);
+    ProjectSettings projectSettings = ServiceManager.getService(myProject, ProjectSettings.class);
     try {
-      if (settings.applications.isEmpty()) {
+      if (projectSettings.applications.isEmpty()) {
         detectCleverApp();
       }
     }
@@ -80,18 +80,18 @@ public class CleverIdeaProjectComponent implements ProjectComponent {
           ArrayList<HashTable> appList = gitProjectDetector.getAppList();
 
           if (!appList.isEmpty()) {
-            Settings settings = ServiceManager.getService(myProject, Settings.class);
+            ProjectSettings projectSettings = ServiceManager.getService(myProject, ProjectSettings.class);
 
             new Notification("Vcs Important Messages", "Clever Cloud application detection", String.format(
               "The Clever IDEA plugin has detected that you have %d remotes pointing to Clever Cloud. " +
               "<a href=\"\">Click here</a> to enable integration.", appList.size()), NotificationType.INFORMATION,
                              (notification, event) -> {
-                               settings.applications = gitProjectDetector.getApplicationList(appList);
+                               projectSettings.applications = gitProjectDetector.getApplicationList(appList);
                                notification.expire();
 
                                new Notification("Vcs Minor Notifications", "Applications successfully linked", String
                                  .format("The following Clever Cloud application have been linked successfully :<br />%s",
-                                         gitProjectDetector.remoteListToString(settings.applications)), NotificationType.INFORMATION)
+                                         gitProjectDetector.remoteListToString(projectSettings.applications)), NotificationType.INFORMATION)
                                  .notify(myProject);
                              }).notify(myProject);
           }

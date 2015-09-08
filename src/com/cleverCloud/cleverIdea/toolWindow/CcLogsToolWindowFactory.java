@@ -1,6 +1,6 @@
 package com.cleverCloud.cleverIdea.toolWindow;
 
-import com.cleverCloud.cleverIdea.Settings;
+import com.cleverCloud.cleverIdea.ProjectSettings;
 import com.cleverCloud.cleverIdea.api.CcApi;
 import com.cleverCloud.cleverIdea.api.CleverCloudApi;
 import com.cleverCloud.cleverIdea.api.json.Application;
@@ -35,13 +35,13 @@ public class CcLogsToolWindowFactory implements ToolWindowFactory, Condition<Pro
     Content logs = contentManager.getFactory().createContent(ccLogForm.getEditor(), "Logs", false);
     contentManager.addContent(logs);
 
-    Settings settings = ServiceManager.getService(project, Settings.class);
-    Application lastUsedApplication = settings.lastUsedApplication;
+    ProjectSettings projectSettings = ServiceManager.getService(project, ProjectSettings.class);
+    Application lastUsedApplication = projectSettings.lastUsedApplication;
     if (lastUsedApplication == null) {
-      SelectApplication selectApplication = new SelectApplication(project, settings.applications, null);
+      SelectApplication selectApplication = new SelectApplication(project, projectSettings.applications, null);
       if (selectApplication.showAndGet()) {
         lastUsedApplication = selectApplication.getSelectedItem();
-        settings.lastUsedApplication = lastUsedApplication;
+        projectSettings.lastUsedApplication = lastUsedApplication;
       }
     }
 
@@ -71,14 +71,14 @@ public class CcLogsToolWindowFactory implements ToolWindowFactory, Condition<Pro
       WebSocketCore webSocketCore = new WebSocketCore(logUri, project, editor);
       webSocketCore.connectBlocking();
     }
-    catch (URISyntaxException | NoSuchAlgorithmException | KeyManagementException | InterruptedException e) {
+    catch (@NotNull URISyntaxException | NoSuchAlgorithmException | KeyManagementException | InterruptedException e) {
       e.printStackTrace();
     }
   }
 
   @Override
   public boolean value(@NotNull Project project) {
-    Settings settings = ServiceManager.getService(project, Settings.class);
-    return !settings.applications.isEmpty();
+    ProjectSettings projectSettings = ServiceManager.getService(project, ProjectSettings.class);
+    return !projectSettings.applications.isEmpty();
   }
 }

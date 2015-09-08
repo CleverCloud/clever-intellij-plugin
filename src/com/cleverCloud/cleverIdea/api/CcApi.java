@@ -1,6 +1,7 @@
 package com.cleverCloud.cleverIdea.api;
 
-import com.cleverCloud.cleverIdea.Settings;
+import com.cleverCloud.cleverIdea.ApplicationSettings;
+import com.cleverCloud.cleverIdea.ProjectSettings;
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.cleverCloud.cleverIdea.api.json.WebSocket;
 import com.cleverCloud.cleverIdea.ui.CcApiLogin;
@@ -23,21 +24,12 @@ import org.scribe.oauth.OAuthService;
 import java.io.IOException;
 import java.io.StringWriter;
 
-/**
- * Main class used to interact with th API
- */
 public class CcApi {
   @Nullable private static CcApi ourInstance = null;
   private Project myProject;
   private Token myAccessToken;
   @Nullable private OAuthService myService = null;
 
-  /**
-   * Return the instance of the API.
-   *
-   * @param project opened in the IDE.
-   * @return instance of CcApi.
-   */
   @NotNull
   public static CcApi getInstance(@NotNull Project project) {
     if (ourInstance == null) ourInstance = new CcApi();
@@ -45,21 +37,16 @@ public class CcApi {
     return ourInstance;
   }
 
-  /**
-   * Login to the CcApi. Required to call the API.
-   *
-   * @return true if login succeed.
-   */
   private boolean login() {
     @SuppressWarnings("SpellCheckingInspection") final String API_KEY = "JaGomLuixI29k62K9Zf9klIlQbZHdf";
     @SuppressWarnings("SpellCheckingInspection") final String API_SECRET = "KRP5Ckc0CKXRBE0QsmmHX3nVG8n5Mu";
     final String API_CALLBACK = "https://console.clever-cloud.com/cli-oauth";
-    final Settings settings = ServiceManager.getService(myProject, Settings.class);
+    final ApplicationSettings applicationSettings = ServiceManager.getService(myProject, ApplicationSettings.class);
 
     myService = new ServiceBuilder().provider(CleverCloudApi.class).apiKey(API_KEY).apiSecret(API_SECRET).callback(API_CALLBACK).build();
 
-    if (!settings.oAuthToken.isEmpty() && !settings.oAuthSecret.isEmpty()) {
-      myAccessToken = new Token(settings.oAuthToken, settings.oAuthSecret);
+    if (applicationSettings.oAuthToken != null && applicationSettings.oAuthSecret != null) {
+      myAccessToken = new Token(applicationSettings.oAuthToken, applicationSettings.oAuthSecret);
       return true;
     }
 
@@ -67,8 +54,8 @@ public class CcApi {
 
     if (login.showAndGet()) {
       myAccessToken = new Token(login.getToken(), login.getSecret());
-      settings.oAuthToken = login.getToken();
-      settings.oAuthSecret = login.getSecret();
+      applicationSettings.oAuthToken = login.getToken();
+      applicationSettings.oAuthSecret = login.getSecret();
       return true;
     }
 
@@ -82,9 +69,6 @@ public class CcApi {
     notification.notify(myProject);
   }
 
-  /**
-   * @return true if {@link CcApi#myService} and {@link CcApi#myAccessToken} are defined.
-   */
   private boolean isValidate() {
     return this.myService != null && this.myAccessToken != null;
   }
@@ -113,10 +97,10 @@ public class CcApi {
 
   @Nullable
   public String logRequest() {
-    Settings settings = ServiceManager.getService(this.myProject, Settings.class);
-    Application application = settings.lastUsedApplication;
+    ProjectSettings projectSettings = ServiceManager.getService(this.myProject, ProjectSettings.class);
+    Application application = projectSettings.lastUsedApplication;
     if (application == null) {
-      SelectApplication selectApplication = new SelectApplication(myProject, settings.applications, null);
+      SelectApplication selectApplication = new SelectApplication(myProject, projectSettings.applications, null);
       if (selectApplication.showAndGet()) application = selectApplication.getSelectedItem();
     }
 

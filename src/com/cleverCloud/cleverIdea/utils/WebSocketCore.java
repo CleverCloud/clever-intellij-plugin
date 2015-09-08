@@ -12,6 +12,7 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_10;
 import org.java_websocket.handshake.ServerHandshake;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
@@ -21,10 +22,10 @@ import java.security.NoSuchAlgorithmException;
 
 public class WebSocketCore extends WebSocketClient {
 
-  private String myLogSigner;
+  @Nullable private String myLogSigner;
   private Editor myEditor;
 
-  public WebSocketCore(URI uri, Project project, Editor editor) throws NoSuchAlgorithmException, KeyManagementException {
+  public WebSocketCore(URI uri, @NotNull Project project, Editor editor) throws NoSuchAlgorithmException, KeyManagementException {
     super(uri, new Draft_10(), null, 0);
 
     SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -35,7 +36,7 @@ public class WebSocketCore extends WebSocketClient {
     myEditor = editor;
   }
 
-  public static void printSocket(Editor editor, String message) {
+  public static void printSocket(@NotNull Editor editor, @NotNull String message) {
     new WriteCommandAction(null) {
       @Override
       protected void run(@NotNull Result result) throws Throwable {
@@ -50,7 +51,7 @@ public class WebSocketCore extends WebSocketClient {
   }
 
   @Override
-  public void onError(Exception e) {
+  public void onError(@NotNull Exception e) {
     e.printStackTrace();
   }
 
