@@ -47,7 +47,7 @@ public class WebSocketCore extends WebSocketClient {
 
   @Override
   public void onClose(int code, String msg, boolean remote) {
-    printSocket(myEditor, "Connetion Closed\n");
+    //printSocket(myEditor, "Connetion Closed\n");
   }
 
   @Override

@@ -112,7 +112,6 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
       }
     }
 
-    System.out.println(applicationList);
     return applicationList;
   }
 

@@ -47,7 +47,7 @@
   <actions>
     <!-- Add your actions here -->
     <group id="CleverCloud" description="Clever Cloud ..."
-           text="Clever Cloud ..." icon="/clever-icon-13.jpg" popup="true">
+           text="Clever Cloud ..." popup="true">
       <add-to-group group-id="VcsGroups"/>
       <action id="CleverCloud.AssociateProjectAction" class="com.cleverCloud.cleverIdea.action.AssociateProjectAction"
               text="Associate with project" description="Associate a project with a Clever Cloud application"/>

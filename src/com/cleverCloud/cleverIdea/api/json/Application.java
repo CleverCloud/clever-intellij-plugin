@@ -10,17 +10,17 @@ public class Application extends CleverService {
   public Application() {
     this.parent = new Organisation();
     this.parent.id = "self";
+    this.parent.name = "self";
+  }
+
+  public Application(Organisation organisation) {
+    this.parent = organisation;
   }
 
   @Override
   public String toString() {
     String name;
-    if (!"self".equals(parent.id)) {
-      name = this.parent.name + " / " + this.name;
-    }
-    else {
-      name = this.name;
-    }
+    name = this.parent.name + "/" + this.name;
     return name;
   }
 }
