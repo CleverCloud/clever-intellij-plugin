@@ -5,7 +5,6 @@ import com.cleverCloud.cleverIdea.api.CcApi;
 import com.cleverCloud.cleverIdea.api.CleverCloudApi;
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.cleverCloud.cleverIdea.ui.CcLogForm;
-import com.cleverCloud.cleverIdea.ui.SelectApplication;
 import com.cleverCloud.cleverIdea.utils.WebSocketCore;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Editor;
@@ -23,6 +22,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -31,31 +31,24 @@ public class CcLogsToolWindowFactory implements ToolWindowFactory, Condition<Pro
   @Override
   public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
     ContentManager contentManager = toolWindow.getContentManager();
-    CcLogForm ccLogForm = new CcLogForm();
-    Content logs = contentManager.getFactory().createContent(ccLogForm.getEditor(), "Logs", false);
-    contentManager.addContent(logs);
-
     ProjectSettings projectSettings = ServiceManager.getService(project, ProjectSettings.class);
-    Application lastUsedApplication = projectSettings.lastUsedApplication;
-    if (lastUsedApplication == null) {
-      SelectApplication selectApplication = new SelectApplication(project, projectSettings.applications, null);
-      if (selectApplication.showAndGet()) {
-        lastUsedApplication = selectApplication.getSelectedItem();
-        projectSettings.lastUsedApplication = lastUsedApplication;
-      }
-    }
+    ArrayList<Application> applications = projectSettings.applications;
 
-    // TODO : add button to choose application
-    if (lastUsedApplication != null) {
+    for (Application application : applications) {
+      CcLogForm ccLogForm = new CcLogForm();
+      Content logs = contentManager.getFactory().createContent(ccLogForm.getEditor(), application.name, false);
+      contentManager.addContent(logs);
       Editor editor = ccLogForm.getEditor().getEditor();
-      assert editor != null;
-      writeLogs(project, lastUsedApplication, editor);
-      String oldLogs = CcApi.getInstance(project).logRequest();
-      if (oldLogs != null) {
-        String[] logsLines = oldLogs.split("\n");
-        for (int i = logsLines.length - 1; i >= 0; --i) {
-          WebSocketCore.printSocket(editor, logsLines[i] + "\n");
-        }
+      assert editor != null; // FIXME : editors == null on second loop iteration
+
+      writeLogs(project, application, editor);
+      String oldLogs = CcApi.getInstance(project).logRequest(application);
+
+      if (oldLogs != null && !oldLogs.isEmpty()) {
+        WebSocketCore.printSocket(editor, oldLogs);
+      }
+      else if (oldLogs != null && oldLogs.isEmpty()) {
+        WebSocketCore.printSocket(editor, "No logs available.\n");
       }
     }
   }
@@ -69,9 +62,9 @@ public class CcLogsToolWindowFactory implements ToolWindowFactory, Condition<Pro
     try {
       URI logUri = new URI(String.format(CleverCloudApi.LOGS_SOKCET_URL, lastUsedApplication.id, timestamp));
       WebSocketCore webSocketCore = new WebSocketCore(logUri, project, editor);
-      webSocketCore.connectBlocking();
+      webSocketCore.connect();
     }
-    catch (@NotNull URISyntaxException | NoSuchAlgorithmException | KeyManagementException | InterruptedException e) {
+    catch (@NotNull URISyntaxException | NoSuchAlgorithmException | KeyManagementException e) {
       e.printStackTrace();
     }
   }
