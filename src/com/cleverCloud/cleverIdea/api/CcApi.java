@@ -1,11 +1,9 @@
 package com.cleverCloud.cleverIdea.api;
 
 import com.cleverCloud.cleverIdea.ApplicationSettings;
-import com.cleverCloud.cleverIdea.ProjectSettings;
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.cleverCloud.cleverIdea.api.json.WebSocket;
 import com.cleverCloud.cleverIdea.ui.CcApiLogin;
-import com.cleverCloud.cleverIdea.ui.SelectApplication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.intellij.notification.Notification;
@@ -96,17 +94,11 @@ public class CcApi {
   }
 
   @Nullable
-  public String logRequest() {
-    ProjectSettings projectSettings = ServiceManager.getService(this.myProject, ProjectSettings.class);
-    Application application = projectSettings.lastUsedApplication;
-    if (application == null) {
-      SelectApplication selectApplication = new SelectApplication(myProject, projectSettings.applications, null);
-      if (selectApplication.showAndGet()) application = selectApplication.getSelectedItem();
-    }
-
+  public String logRequest(Application application) {
     assert application != null;
-    OAuthRequest request =
-      new OAuthRequest(Verb.GET, CleverCloudApi.LOGS_URL + application.id + "?limit=" + Integer.toString(CleverCloudApi.LOG_LIMIT));
+    String url = CleverCloudApi.LOGS_URL + application.id + "?limit=300&order=asc";
+    System.out.println(url);
+    OAuthRequest request = new OAuthRequest(Verb.GET, url);
 
     assert myService != null;
     myService.signRequest(myAccessToken, request);
