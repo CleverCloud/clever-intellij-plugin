@@ -7,21 +7,34 @@
   </vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+      <a href="https://www.clever-cloud.com">Clever Cloud</a> integration in IntelliJ IDEA.<br />
+      Include:<br />
+      <ul>
+        <li>Detection and association of Clever Cloud applications with the current project.</li>
+        <li>Clone a Clever Cloud application</li>
+        <li>Push on Clever Cloud action</li>
+        <li>Integration of logs inside the IDE</li>
+      </ul>
     ]]></description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
+      0.1:<br />
+      <ul>
+        <li>Detection/association of projects</li>
+        <li>Log tool window</li>
+        <li>Clone from Clever Cloud</li>
+        <li>Push on Clever Cloud</li>
+      </ul>
     ]]>
   </change-notes>
 
   <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="131"/>
+  <idea-version since-build="142.5047"/>
 
   <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
+  <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.vcs</depends>
   <depends>Git4Idea</depends>
 
   <extensions defaultExtensionNs="com.intellij">
