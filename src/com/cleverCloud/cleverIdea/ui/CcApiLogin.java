@@ -12,9 +12,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-/**
- * TODO : Ask about UI Designer
- */
 public class CcApiLogin extends DialogWrapper {
   private JPanel panel;
   private JTextField tokenTextField1;
@@ -38,7 +35,6 @@ public class CcApiLogin extends DialogWrapper {
         desktop.browse(uri);
       }
       else {
-        // TODO : find why it happens
         System.out.println("Browse action isn't supported");
       }
       init();

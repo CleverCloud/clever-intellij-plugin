@@ -42,7 +42,7 @@ public class CleverCheckoutProvider extends GitCheckoutProvider {
     });
 
     final CleverClone dialog = new CleverClone(project, applicationList.get());
-    if (!dialog.showAndGet()) return; // FIXME : NPE on button who doesn't exist
+    if (!dialog.showAndGet()) return;
 
     final VirtualFile destinationParent = LocalFileSystem.getInstance().findFileByIoFile(new File(dialog.getParentDirectory()));
     if (destinationParent == null) {
