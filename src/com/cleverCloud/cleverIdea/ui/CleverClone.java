@@ -8,6 +8,8 @@ import git4idea.remote.GitRememberedInputs;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 public class CleverClone extends DialogWrapper {
@@ -22,7 +24,7 @@ public class CleverClone extends DialogWrapper {
     init();
     setTitle("Clone Clever Cloud Application");
     for (Application application : applications) myRepositoryUrl.addItem(application);
-    myRepositoryUrl.addActionListener(evt -> myDirectoryName.setText(((Application)myRepositoryUrl.getSelectedItem()).name));
+
     if (project != null) {
       myParentDirectory.setText(project.getBaseDir().getParent().getPath());
     }
@@ -30,6 +32,9 @@ public class CleverClone extends DialogWrapper {
       DvcsRememberedInputs gitRememberedInputs = GitRememberedInputs.getInstance();
       myParentDirectory.setText(gitRememberedInputs.getCloneParentDir());
     }
+
+    myDirectoryName.setText(((Application)myRepositoryUrl.getSelectedItem()).name);
+    myRepositoryUrl.addActionListener(evt -> myDirectoryName.setText(((Application)myRepositoryUrl.getSelectedItem()).name));
   }
 
   @Nullable
