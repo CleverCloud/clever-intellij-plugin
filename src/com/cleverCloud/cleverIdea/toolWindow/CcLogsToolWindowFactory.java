@@ -4,10 +4,11 @@ import com.cleverCloud.cleverIdea.ProjectSettings;
 import com.cleverCloud.cleverIdea.api.CcApi;
 import com.cleverCloud.cleverIdea.api.CleverCloudApi;
 import com.cleverCloud.cleverIdea.api.json.Application;
-import com.cleverCloud.cleverIdea.ui.CcLogForm;
 import com.cleverCloud.cleverIdea.utils.WebSocketCore;
+import com.intellij.execution.filters.TextConsoleBuilder;
+import com.intellij.execution.filters.TextConsoleBuilderFactory;
+import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.wm.ToolWindow;
@@ -35,25 +36,25 @@ public class CcLogsToolWindowFactory implements ToolWindowFactory, Condition<Pro
     ArrayList<Application> applications = projectSettings.applications;
 
     for (Application application : applications) {
-      CcLogForm ccLogForm = new CcLogForm();
-      Content logs = contentManager.getFactory().createContent(ccLogForm.getEditor(), application.name, false);
-      contentManager.addContent(logs);
-      Editor editor = ccLogForm.getEditor().getEditor();
-      assert editor != null; // FIXME : editors == null on second loop iteration
+      TextConsoleBuilder builder = TextConsoleBuilderFactory.getInstance().createBuilder(project);
+      ConsoleView console = builder.getConsole();
 
-      writeLogs(project, application, editor);
+      Content logs = contentManager.getFactory().createContent(console.getComponent(), application.name, false);
+      contentManager.addContent(logs);
+
+      writeLogs(project, application, console);
       String oldLogs = CcApi.getInstance(project).logRequest(application);
 
       if (oldLogs != null && !oldLogs.isEmpty()) {
-        WebSocketCore.printSocket(editor, oldLogs);
+        WebSocketCore.printSocket(console, oldLogs);
       }
       else if (oldLogs != null && oldLogs.isEmpty()) {
-        WebSocketCore.printSocket(editor, "No logs available.\n");
+        WebSocketCore.printSocket(console, "No logs available.\n");
       }
     }
   }
 
-  private void writeLogs(@NotNull Project project, @NotNull Application lastUsedApplication, @NotNull Editor editor) {
+  private void writeLogs(@NotNull Project project, @NotNull Application lastUsedApplication, @NotNull ConsoleView consoleView) {
     TimeZone tz = TimeZone.getTimeZone("UTC");
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:s.S'Z'");
     df.setTimeZone(tz);
@@ -61,7 +62,7 @@ public class CcLogsToolWindowFactory implements ToolWindowFactory, Condition<Pro
 
     try {
       URI logUri = new URI(String.format(CleverCloudApi.LOGS_SOKCET_URL, lastUsedApplication.id, timestamp));
-      WebSocketCore webSocketCore = new WebSocketCore(logUri, project, editor);
+      WebSocketCore webSocketCore = new WebSocketCore(logUri, project, consoleView);
       webSocketCore.connect();
     }
     catch (@NotNull URISyntaxException | NoSuchAlgorithmException | KeyManagementException e) {
