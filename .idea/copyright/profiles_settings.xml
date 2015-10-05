@@ -1,3 +1,7 @@
 <component name="CopyrightManager">
-  <settings default="" />
+  <settings default="">
+    <module2copyright>
+      <element module="Clever-IDEA" copyright="MIT Clever Cloud" />
+    </module2copyright>
+  </settings>
 </component>
