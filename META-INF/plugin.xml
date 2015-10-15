@@ -7,24 +7,24 @@
   </vendor>
 
   <description><![CDATA[
-      <a href="https://www.clever-cloud.com">Clever Cloud</a> integration in IntelliJ IDEA.<br />
-      Include:<br />
-      <ul>
-        <li>Detection and association of Clever Cloud applications with the current project.</li>
-        <li>Clone a Clever Cloud application</li>
-        <li>Push on Clever Cloud action</li>
-        <li>Integration of logs inside the IDE</li>
-      </ul>
+    <a href="https://www.clever-cloud.com">Clever Cloud</a> integration in IntelliJ IDEA.<br/>
+    Include:<br/>
+    <ul>
+      <li>Detection and association of Clever Cloud applications with the current project.</li>
+      <li>Clone a Clever Cloud application</li>
+      <li>Push on Clever Cloud action</li>
+      <li>Integration of logs inside the IDE</li>
+    </ul>
     ]]></description>
 
   <change-notes><![CDATA[
-      0.1:<br />
-      <ul>
-        <li>Detection/association of projects</li>
-        <li>Log tool window</li>
-        <li>Clone from Clever Cloud</li>
-        <li>Push on Clever Cloud</li>
-      </ul>
+    0.1:<br/>
+    <ul>
+      <li>Detection/association of projects</li>
+      <li>Log tool window</li>
+      <li>Clone from Clever Cloud</li>
+      <li>Push on Clever Cloud</li>
+    </ul>
     ]]>
   </change-notes>
 
@@ -40,7 +40,8 @@
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
     <toolWindow id="Logs Clever Cloud" anchor="bottom" secondary="false"
-                factoryClass="com.cleverCloud.cleverIdea.toolWindow.CcLogsToolWindowFactory" icon="/clever-icon-13.jpg"/>
+                factoryClass="com.cleverCloud.cleverIdea.toolWindow.CcLogsToolWindowFactory" icon="/clever-icon-13.jpg"
+                conditionClass="com.cleverCloud.cleverIdea.toolWindow.CcLogsToolWindowFactory"/>
     <projectService serviceImplementation="com.cleverCloud.cleverIdea.ProjectSettings"/>
     <applicationService serviceImplementation="com.cleverCloud.cleverIdea.ApplicationSettings"/>
     <checkoutProvider implementation="com.cleverCloud.cleverIdea.vcs.CleverCheckoutProvider"/>
