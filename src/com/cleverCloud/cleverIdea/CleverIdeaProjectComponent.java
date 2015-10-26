@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) $YEAR Clever Cloud, SAS
+ * Copyright (c) 2015 Clever Cloud, SAS
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 
 package com.cleverCloud.cleverIdea;
 
+import com.cleverCloud.cleverIdea.utils.ApplicationsUtilities;
 import com.cleverCloud.cleverIdea.vcs.GitProjectDetector;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -115,7 +116,7 @@ public class CleverIdeaProjectComponent implements ProjectComponent {
 
                                new Notification("Vcs Minor Notifications", "Applications successfully linked", String
                                  .format("The following Clever Cloud application have been linked successfully :<br />%s",
-                                         gitProjectDetector.remoteListToString(projectSettings.applications)), NotificationType.INFORMATION)
+                                         ApplicationsUtilities.remoteListToString(projectSettings.applications)), NotificationType.INFORMATION)
                                  .notify(myProject);
                              }).notify(myProject);
           }

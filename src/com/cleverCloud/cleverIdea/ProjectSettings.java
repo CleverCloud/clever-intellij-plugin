@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) $YEAR Clever Cloud, SAS
+ * Copyright (c) 2015 Clever Cloud, SAS
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * Contain project specific configuration as list of applications.
+ */
 @State(
   name = "CleverIdeaProjectSettings",
   storages = {@Storage(id = "other", file = StoragePathMacros.PROJECT_FILE),

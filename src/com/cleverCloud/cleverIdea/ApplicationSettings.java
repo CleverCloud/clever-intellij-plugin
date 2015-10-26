@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) $YEAR Clever Cloud, SAS
+ * Copyright (c) 2015 Clever Cloud, SAS
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,9 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Manage application settings as user tokens.
+ */
 @State(
   name = "CleverIdeaApplicationSettings",
   storages = @Storage(id = "other", file = StoragePathMacros.APP_CONFIG + "cleverIdea.xml"))

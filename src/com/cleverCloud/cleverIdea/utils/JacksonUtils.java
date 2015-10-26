@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) $YEAR Clever Cloud, SAS
+ * Copyright (c) 2015 Clever Cloud, SAS
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,10 +32,8 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class JacksonUtils {
-  public static HashMap jsonToMap(String json) throws JsonParseException, JsonMappingException, IOException {
-    HashMap map = new HashMap<>();
+  public static HashMap jsonToMap(String json) throws IOException {
     ObjectMapper mapper = new ObjectMapper();
-    map = mapper.readValue(json, HashMap.class);
-    return map;
+    return mapper.readValue(json, HashMap.class);
   }
 }

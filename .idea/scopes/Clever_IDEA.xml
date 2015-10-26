@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Clever-IDEA" pattern="file[Clever-IDEA]:src/com/cleverCloud/cleverIdea/*||file[Clever-IDEA]:src/com/cleverCloud/cleverIdea/action/*||file[Clever-IDEA]:src/com/cleverCloud/cleverIdea/api/*||file[Clever-IDEA]:src/com/cleverCloud/cleverIdea/api/json/*||file[Clever-IDEA]:src/com/cleverCloud/cleverIdea/toolWindow/*||file[Clever-IDEA]:src/com/cleverCloud/cleverIdea/ui/*||file[Clever-IDEA]:src/com/cleverCloud/cleverIdea/utils/*||file[Clever-IDEA]:src/com/cleverCloud/cleverIdea/vcs/*||file:META-INF/plugin.xml" />
+</component>
