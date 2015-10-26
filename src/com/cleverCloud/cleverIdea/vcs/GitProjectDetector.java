@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) $YEAR Clever Cloud, SAS
+ * Copyright (c) 2015 Clever Cloud, SAS
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ package com.cleverCloud.cleverIdea.vcs;
 import com.cleverCloud.cleverIdea.ProjectSettings;
 import com.cleverCloud.cleverIdea.api.CcApi;
 import com.cleverCloud.cleverIdea.api.json.Application;
+import com.cleverCloud.cleverIdea.utils.ApplicationsUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -34,7 +35,6 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import git4idea.repo.GitRemote;
 import git4idea.repo.GitRepository;
-import git4idea.repo.GitRepositoryChangeListener;
 import git4idea.repo.GitRepositoryManager;
 import org.apache.batik.dom.util.HashTable;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GitProjectDetector implements GitRepositoryChangeListener {
+public class GitProjectDetector {
   @NotNull private final Pattern pattern =
     Pattern.compile("^git\\+ssh://git@push\\.[\\w]{3}\\.clever-cloud\\.com/(app_([a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}))\\.git$");
   private final Project myProject;
@@ -60,7 +60,7 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
 
   public void detect() {
     ArrayList<Application> applicationList = getApplicationList(getAppList());
-    String remoteStringList = remoteListToString(applicationList);
+    String remoteStringList = ApplicationsUtilities.remoteListToString(applicationList);
     String content;
     if (remoteStringList == null) {
       content = "No Clever Cloud application has been found in your remotes.<br />" +
@@ -142,23 +142,6 @@ public class GitProjectDetector implements GitRepositoryChangeListener {
     }
 
     return applicationList;
-  }
-
-  @Nullable
-  public String remoteListToString(@NotNull ArrayList<Application> applications) {
-    if (applications.isEmpty()) return null;
-
-    String linkList = "";
-    for (Application application : applications) {
-      linkList = linkList + String.format("<li>%s<br /></li>", application.name);
-    }
-
-    return linkList;
-  }
-
-  @Override
-  public void repositoryChanged(@NotNull GitRepository repository) {
-    detect();
   }
 
   private enum AppInfos {
