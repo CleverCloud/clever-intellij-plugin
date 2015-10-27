@@ -60,7 +60,6 @@ public class CcApiLogin extends DialogWrapper {
         URI uri = new URI(address);
         desktop.browse(uri);
       }
-
       else {
         Runtime runtime = Runtime.getRuntime();
         try {

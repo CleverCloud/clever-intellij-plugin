@@ -58,12 +58,7 @@ public class CleverCheckoutProvider extends GitCheckoutProvider {
   @Override
   public void doCheckout(@NotNull Project project, @Nullable Listener listener) {
     AtomicReference<List<Application>> applicationList = new AtomicReference<>();
-    ProgressManager.getInstance().run(new Task.Modal(project, "Connexion to Clever Cloud", false) {
-      @Override
-      public void run(@NotNull ProgressIndicator indicator) {
-        applicationList.set(getApplicationsFromOrga(project));
-      }
-    });
+    applicationList.set(getApplicationsFromOrga(project));
 
     final CleverClone dialog = new CleverClone(project, applicationList.get());
     if (!dialog.showAndGet()) return;

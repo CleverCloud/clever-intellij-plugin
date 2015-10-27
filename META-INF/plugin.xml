@@ -42,7 +42,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
-    0.1:<br/>
+    1.0:<br/>
     <ul>
       <li>Detection/association of projects</li>
       <li>Log tool window</li>
