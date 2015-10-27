@@ -46,24 +46,32 @@ public class CcApiLogin extends DialogWrapper {
 
   public CcApiLogin(@Nullable Project project, @NotNull String address) {
     super(project);
-    openBrowser(address);
+    openBrowser(address, project);
     label.setHtmlText(String.format(
       "Copy and past the Token and the Secret shown in your browser : (If the page does not open, <a href=\"%s\">click here</a>)",
       address));
-    label.addHyperlinkListener(e -> openBrowser(address));
+    label.addHyperlinkListener(e -> openBrowser(address, project));
   }
 
-  private void openBrowser(@NotNull String address) {
+  private void openBrowser(@NotNull String address, @Nullable Project project) {
     Desktop desktop = Desktop.getDesktop();
     try {
       if (desktop.isSupported(Desktop.Action.BROWSE)) {
         URI uri = new URI(address);
         desktop.browse(uri);
       }
+
       else {
-        new Notification("System Health", "Action not supported",
-                         "The \"Open Browser\" action is not supported by your system. Please, open the following url manually :<br />" +
-                         address, NotificationType.ERROR).notify();
+        Runtime runtime = Runtime.getRuntime();
+        try {
+          runtime.exec("xdg-open " + address);
+        }
+        catch (IOException e) {
+          new Notification("System Health", "Action not supported",
+                           "The \"Open Browser\" action is not supported by your system. Please, open the following url manually :<br />" +
+                           address, NotificationType.ERROR).notify(project);
+          e.printStackTrace();
+        }
       }
       init();
       setTitle("Login");
