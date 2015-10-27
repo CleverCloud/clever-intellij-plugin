@@ -31,12 +31,10 @@ import com.cleverCloud.cleverIdea.ui.CleverClone;
 import com.cleverCloud.cleverIdea.utils.JacksonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.ui.Messages;
 import git4idea.checkout.GitCheckoutProvider;
 import git4idea.commands.Git;
 import org.jetbrains.annotations.NotNull;
@@ -59,14 +57,17 @@ public class CleverCheckoutProvider extends GitCheckoutProvider {
   public void doCheckout(@NotNull Project project, @Nullable Listener listener) {
     AtomicReference<List<Application>> applicationList = new AtomicReference<>();
     applicationList.set(getApplicationsFromOrga(project));
+    if (applicationList.get().size() == 0) {
+      Messages.showMessageDialog("No application is currently linked with you application. Impossible to clone and create a project.",
+                                 "No Application Available", Messages.getErrorIcon());
+      return;
+    }
 
     final CleverClone dialog = new CleverClone(project, applicationList.get());
     if (!dialog.showAndGet()) return;
 
     final VirtualFile destinationParent = LocalFileSystem.getInstance().findFileByIoFile(new File(dialog.getParentDirectory()));
-    if (destinationParent == null) {
-      return;
-    }
+    if (destinationParent == null) return;
 
     final String sourceRepositoryURL = dialog.getRepositoryUrl();
     final String directoryName = dialog.getDirectoryName();
