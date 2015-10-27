@@ -24,6 +24,8 @@
 
 package com.cleverCloud.cleverIdea.ui;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.HyperlinkLabel;
@@ -59,7 +61,9 @@ public class CcApiLogin extends DialogWrapper {
         desktop.browse(uri);
       }
       else {
-        System.out.println("Browse action isn't supported");
+        new Notification("System Health", "Action not supported",
+                         "The \"Open Browser\" action is not supported by your system. Please, open the following url manually :<br />" +
+                         address, NotificationType.ERROR).notify();
       }
       init();
       setTitle("Login");
