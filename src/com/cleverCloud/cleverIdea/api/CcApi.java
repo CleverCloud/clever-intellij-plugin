@@ -49,7 +49,7 @@ import java.io.StringWriter;
 public class CcApi {
   @Nullable private static CcApi ourInstance = null;
   private Project myProject;
-  private Token myAccessToken;
+  @Nullable private Token myAccessToken;
   @Nullable private OAuthService myService = null;
 
   @NotNull
@@ -59,7 +59,7 @@ public class CcApi {
     return ourInstance;
   }
 
-  private boolean login() {
+  public boolean login() {
     @SuppressWarnings("SpellCheckingInspection") final String API_KEY = "JaGomLuixI29k62K9Zf9klIlQbZHdf";
     @SuppressWarnings("SpellCheckingInspection") final String API_SECRET = "KRP5Ckc0CKXRBE0QsmmHX3nVG8n5Mu";
     final String API_CALLBACK = "https://console.clever-cloud.com/cli-oauth";
@@ -97,11 +97,9 @@ public class CcApi {
 
   @Nullable
   public String apiRequest(@NotNull String url) {
-    if (!isValidate()) {
-      if (!login()) {
-        callApiErrorNotification(url);
-        return null;
-      }
+    if (!isValidate() && !login()) {
+      callApiErrorNotification(url);
+      return null;
     }
 
     OAuthRequest request = new OAuthRequest(Verb.GET, CleverCloudApi.BASE_URL + url);
@@ -118,8 +116,7 @@ public class CcApi {
   }
 
   @Nullable
-  public String logRequest(Application application) {
-    assert application != null;
+  public String logRequest(@NotNull Application application) {
     String url = CleverCloudApi.LOGS_URL + application.id + "?limit=300&order=asc";
     System.out.println(url);
     OAuthRequest request = new OAuthRequest(Verb.GET, url);
@@ -133,11 +130,7 @@ public class CcApi {
 
   @Nullable
   public String wsLogSigner() {
-    if (!isValidate()) {
-      if (!login()) {
-        return null;
-      }
-    }
+    if (!isValidate() && !login()) return null;
 
     OAuthRequest request = new OAuthRequest(Verb.GET, CleverCloudApi.BASE_URL);
     assert myService != null;

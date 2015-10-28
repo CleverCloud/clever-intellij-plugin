@@ -31,10 +31,13 @@ import com.cleverCloud.cleverIdea.ui.CleverClone;
 import com.cleverCloud.cleverIdea.utils.JacksonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.ui.Messages;
 import git4idea.checkout.GitCheckoutProvider;
 import git4idea.commands.Git;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +59,16 @@ public class CleverCheckoutProvider extends GitCheckoutProvider {
   @Override
   public void doCheckout(@NotNull Project project, @Nullable Listener listener) {
     AtomicReference<List<Application>> applicationList = new AtomicReference<>();
-    applicationList.set(getApplicationsFromOrga(project));
+    CcApi ccApi = CcApi.getInstance(project);
+    ccApi.login();
+
+    ProgressManager.getInstance().run(new Task.Backgroundable(project, "Connexion to Clever Cloud", false) {
+      @Override
+      public void run(@NotNull ProgressIndicator indicator) {
+        applicationList.set(getApplicationsFromOrga(project));
+      }
+    });
+
     if (applicationList.get().size() == 0) {
       Messages.showMessageDialog("No application is currently linked with you application. Impossible to clone and create a project.",
                                  "No Application Available", Messages.getErrorIcon());
@@ -77,7 +89,7 @@ public class CleverCheckoutProvider extends GitCheckoutProvider {
     GitCheckoutProvider.clone(project, git, listener, destinationParent, sourceRepositoryURL, directoryName, parentDirectory);
   }
 
-  private List<Application> getApplicationsFromOrga(Project project) {
+  private List<Application> getApplicationsFromOrga(@NotNull Project project) {
     CcApi ccApi = CcApi.getInstance(project);
     String json = ccApi.apiRequest("/self/applications");
     assert json != null;
@@ -102,7 +114,7 @@ public class CleverCheckoutProvider extends GitCheckoutProvider {
     try {
       organisations = mapper.readValue(json, Organisation[].class);
     }
-    catch (IOException | NullPointerException e) {
+    catch (@NotNull IOException | NullPointerException e) {
       e.printStackTrace();
       return null;
     }
@@ -121,7 +133,7 @@ public class CleverCheckoutProvider extends GitCheckoutProvider {
     try {
       return mapper.readValue(json, Application[].class);
     }
-    catch (IOException | NullPointerException e) {
+    catch (@NotNull IOException | NullPointerException e) {
       e.printStackTrace();
       return null;
     }
