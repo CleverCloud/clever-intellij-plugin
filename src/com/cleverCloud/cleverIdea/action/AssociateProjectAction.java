@@ -24,9 +24,11 @@
 
 package com.cleverCloud.cleverIdea.action;
 
+import com.cleverCloud.cleverIdea.ProjectSettings;
 import com.cleverCloud.cleverIdea.vcs.GitProjectDetector;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import git4idea.GitVcs;
 import org.jetbrains.annotations.NotNull;
@@ -51,9 +53,15 @@ public class AssociateProjectAction extends AnAction {
 
     if (!projectLevelVcsManager.checkVcsIsActive(GitVcs.NAME)) {
       e.getPresentation().setEnabled(false);
+      return;
     }
     else {
       e.getPresentation().setEnabledAndVisible(true);
+    }
+
+    ProjectSettings projectSettings = ServiceManager.getService(e.getProject(), ProjectSettings.class);
+    if (!projectSettings.applications.isEmpty()) {
+      e.getPresentation().setText("Update associate applications");
     }
   }
 }
