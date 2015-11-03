@@ -24,9 +24,11 @@
 
 package com.cleverCloud.cleverIdea;
 
+import com.cleverCloud.cleverIdea.toolWindow.CcLogsToolWindow;
 import com.cleverCloud.cleverIdea.utils.ApplicationsUtilities;
 import com.cleverCloud.cleverIdea.vcs.GitProjectDetector;
 import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationListener;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.components.ServiceManager;
@@ -78,6 +80,9 @@ public class CleverIdeaProjectComponent implements ProjectComponent {
       if (projectSettings.applications.isEmpty()) {
         detectCleverApp();
       }
+      else {
+        CcLogsToolWindow ccLogsToolWindow = new CcLogsToolWindow(myProject);
+      }
     }
     catch (XmlSerializationException e) {
       e.printStackTrace();
@@ -110,18 +115,24 @@ public class CleverIdeaProjectComponent implements ProjectComponent {
             new Notification("Vcs Important Messages", "Clever Cloud application detection", String.format(
               "The Clever IDEA plugin has detected that you have %d remotes pointing to Clever Cloud. " +
               "<a href=\"\">Click here</a> to enable integration.", appList.size()), NotificationType.INFORMATION,
-                             (notification, event) -> {
-                               projectSettings.applications = gitProjectDetector.getApplicationList(appList);
-                               notification.expire();
-
-                               new Notification("Vcs Minor Notifications", "Applications successfully linked", String
-                                 .format("The following Clever Cloud application have been linked successfully :<br />%s",
-                                         ApplicationsUtilities.remoteListToString(projectSettings.applications)), NotificationType.INFORMATION)
-                                 .notify(myProject);
-                             }).notify(myProject);
+                             hyperlinkUpdaterListener(gitProjectDetector, appList, projectSettings)).notify(myProject);
           }
         }
       }
     });
+  }
+
+  @NotNull
+  private NotificationListener hyperlinkUpdaterListener(final GitProjectDetector gitProjectDetector,
+                                                        final ArrayList<HashTable> appList,
+                                                        final ProjectSettings projectSettings) {
+    return (notification, event) -> {
+      projectSettings.applications = gitProjectDetector.getApplicationList(appList);
+      notification.expire();
+
+      new Notification("Vcs Minor Notifications", "Applications successfully linked", String
+        .format("The following Clever Cloud application have been linked successfully :<br />%s",
+                ApplicationsUtilities.remoteListToString(projectSettings.applications)), NotificationType.INFORMATION).notify(myProject);
+    };
   }
 }

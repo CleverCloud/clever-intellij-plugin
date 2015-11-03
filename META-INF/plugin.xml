@@ -56,9 +56,6 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-    <toolWindow id="Logs Clever Cloud" anchor="bottom" secondary="false"
-                factoryClass="com.cleverCloud.cleverIdea.toolWindow.CcLogsToolWindowFactory" icon="/clever-icon-13.jpg"
-                conditionClass="com.cleverCloud.cleverIdea.toolWindow.CcLogsToolWindowFactory"/>
     <projectService serviceImplementation="com.cleverCloud.cleverIdea.ProjectSettings"/>
     <applicationService serviceImplementation="com.cleverCloud.cleverIdea.ApplicationSettings"/>
     <checkoutProvider implementation="com.cleverCloud.cleverIdea.vcs.CleverCheckoutProvider"/>

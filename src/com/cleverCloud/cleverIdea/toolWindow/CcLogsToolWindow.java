@@ -34,9 +34,9 @@ import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowFactory;
+import com.intellij.openapi.wm.ToolWindowAnchor;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 import org.jetbrains.annotations.NotNull;
@@ -51,10 +51,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class CcLogsToolWindowFactory implements ToolWindowFactory, Condition<Project> {
-
-  @Override
-  public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+public class CcLogsToolWindow {
+  public CcLogsToolWindow(@NotNull Project project) {
+    ToolWindow toolWindow = ToolWindowManager.getInstance(project).registerToolWindow("Logs Clever Cloud", false, ToolWindowAnchor.BOTTOM);
     ContentManager contentManager = toolWindow.getContentManager();
     ProjectSettings projectSettings = ServiceManager.getService(project, ProjectSettings.class);
     ArrayList<Application> applications = projectSettings.applications;
@@ -92,11 +91,5 @@ public class CcLogsToolWindowFactory implements ToolWindowFactory, Condition<Pro
     catch (@NotNull URISyntaxException | NoSuchAlgorithmException | KeyManagementException e) {
       e.printStackTrace();
     }
-  }
-
-  @Override
-  public boolean value(@NotNull Project project) {
-    ProjectSettings projectSettings = ServiceManager.getService(project, ProjectSettings.class);
-    return !projectSettings.applications.isEmpty();
   }
 }

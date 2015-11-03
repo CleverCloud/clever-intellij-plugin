@@ -76,6 +76,7 @@ public class GitProjectDetector {
       .notify(myProject);
 
     ServiceManager.getService(myProject, ProjectSettings.class).applications = applicationList;
+    //CcLogsToolWindow.openToolWindow(myProject);
   }
 
   /**

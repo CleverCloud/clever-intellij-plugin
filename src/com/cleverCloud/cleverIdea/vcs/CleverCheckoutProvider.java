@@ -28,6 +28,7 @@ import com.cleverCloud.cleverIdea.api.CcApi;
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.cleverCloud.cleverIdea.api.json.Organisation;
 import com.cleverCloud.cleverIdea.ui.CleverClone;
+import com.cleverCloud.cleverIdea.utils.GitUtils;
 import com.cleverCloud.cleverIdea.utils.JacksonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.openapi.components.ServiceManager;
@@ -38,8 +39,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import git4idea.GitUtil;
+import git4idea.actions.BasicAction;
 import git4idea.checkout.GitCheckoutProvider;
 import git4idea.commands.Git;
+import git4idea.config.GitVersion;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,24 +62,22 @@ public class CleverCheckoutProvider extends GitCheckoutProvider {
 
   @Override
   public void doCheckout(@NotNull Project project, @Nullable Listener listener) {
-    AtomicReference<List<Application>> applicationList = new AtomicReference<>();
+    if (GitUtils.testGitExecutable(project)) return;
+    BasicAction.saveAll();
+
+    List<Application> applicationList;
     CcApi ccApi = CcApi.getInstance(project);
     ccApi.login();
 
-    ProgressManager.getInstance().run(new Task.Backgroundable(project, "Connexion to Clever Cloud", false) {
-      @Override
-      public void run(@NotNull ProgressIndicator indicator) {
-        applicationList.set(getApplicationsFromOrga(project));
-      }
-    });
+    applicationList = getApplicationsFromOrga(project);
 
-    if (applicationList.get().size() == 0) {
+    if (applicationList == null || applicationList.size() == 0) {
       Messages.showMessageDialog("No application is currently linked with you application. Impossible to clone and create a project.",
                                  "No Application Available", Messages.getErrorIcon());
       return;
     }
 
-    final CleverClone dialog = new CleverClone(project, applicationList.get());
+    final CleverClone dialog = new CleverClone(project, applicationList);
     if (!dialog.showAndGet()) return;
 
     final VirtualFile destinationParent = LocalFileSystem.getInstance().findFileByIoFile(new File(dialog.getParentDirectory()));
