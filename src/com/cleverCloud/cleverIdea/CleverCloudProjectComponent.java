@@ -46,14 +46,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class CleverIdeaProjectComponent implements ProjectComponent {
+public class CleverCloudProjectComponent implements ProjectComponent {
   private final Project myProject;
   private final ProjectLevelVcsManager myProjectLevelVcsManager;
   private final GitRepositoryManager myGitRepositoryManager;
 
-  public CleverIdeaProjectComponent(Project project,
-                                    ProjectLevelVcsManager projectLevelVcsManager,
-                                    GitRepositoryManager gitRepositoryManager) {
+  public CleverCloudProjectComponent(Project project,
+                                     ProjectLevelVcsManager projectLevelVcsManager,
+                                     GitRepositoryManager gitRepositoryManager) {
     myProject = project;
     myProjectLevelVcsManager = projectLevelVcsManager;
     myGitRepositoryManager = gitRepositoryManager;
@@ -70,7 +70,7 @@ public class CleverIdeaProjectComponent implements ProjectComponent {
   @Override
   @NotNull
   public String getComponentName() {
-    return "CleverIdeaProjectComponent";
+    return "CleverCloudProjectComponent";
   }
 
   @Override

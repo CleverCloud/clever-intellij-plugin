@@ -24,7 +24,7 @@
 
 <idea-plugin version="2">
   <id>com.clever-cloud.clever-idea</id>
-  <name>Clever IDEA</name>
+  <name>Clever Cloud Integration</name>
   <version>0.4</version>
   <vendor email="gauthier.pogam-lemontagner@clever-cloud.com"
           url="http://www.clever-cloud.com">Clever Cloud
@@ -68,7 +68,7 @@
   <project-components>
     <!-- Add your project components here -->
     <component>
-      <implementation-class>com.cleverCloud.cleverIdea.CleverIdeaProjectComponent</implementation-class>
+      <implementation-class>com.cleverCloud.cleverIdea.CleverCloudProjectComponent</implementation-class>
     </component>
   </project-components>
 
