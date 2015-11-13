@@ -24,11 +24,11 @@
 
 package com.cleverCloud.cleverIdea.utils;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.project.Project;
 import git4idea.config.GitVcsApplicationSettings;
 import git4idea.config.GitVersion;
-import git4idea.i18n.GitBundle;
-import org.jetbrains.plugins.github.util.GithubNotifications;
 
 public class GitUtils {
   public static boolean testGitExecutable(Project project) {
@@ -38,15 +38,19 @@ public class GitUtils {
     GitVersion version;
     try {
       version = GitVersion.identifyVersion(executable);
-    } catch (Exception var5) {
-      GithubNotifications.showErrorDialog(project, GitBundle.getString("find.git.error.title"), var5);
+    }
+    catch (Exception var5) {
+      new Notification("Vcs Important Messages", "Git executable can't be found",
+                       "The git executable ca not be found. Please check your settings.", NotificationType.INFORMATION).notify(project);
       return false;
     }
 
-    if(!version.isSupported()) {
-      GithubNotifications.showWarningDialog(project, GitBundle.message("find.git.unsupported.message", version.toString(), GitVersion.MIN), GitBundle.getString("find.git.success.title"));
+    if (!version.isSupported()) {
+      new Notification("Vcs Important Messages", "Git version unsupported",
+                       "Your version of git is not supported.", NotificationType.INFORMATION).notify(project);
       return false;
-    } else {
+    }
+    else {
       return true;
     }
   }
