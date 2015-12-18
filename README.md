@@ -32,3 +32,12 @@ installation of **IntelliJ IDEA 15** (Community or Ultimate).
 
 The project includes necessary configuration to work on the plugin (Code Style, UI Designer, Plugin Dependencies, libraries, ...), so you
 can directly start to edit the project.
+
+### Find documentation
+
+Some useful topics hase been opened in the JetBrains forum:
+
+- https://devnet.jetbrains.com/thread/466432?tstart=0
+- https://devnet.jetbrains.com/thread/466308?tstart=0
+- https://devnet.jetbrains.com/thread/466553?tstart=0 (lot of infos about how Git works in IntelliJ)
+- https://devnet.jetbrains.com/thread/472453?tstart=0
