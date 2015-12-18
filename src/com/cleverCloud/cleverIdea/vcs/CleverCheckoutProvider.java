@@ -32,18 +32,13 @@ import com.cleverCloud.cleverIdea.utils.GitUtils;
 import com.cleverCloud.cleverIdea.utils.JacksonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import git4idea.GitUtil;
 import git4idea.actions.BasicAction;
 import git4idea.checkout.GitCheckoutProvider;
 import git4idea.commands.Git;
-import git4idea.config.GitVersion;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,7 +48,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class CleverCheckoutProvider extends GitCheckoutProvider {
   public CleverCheckoutProvider(@NotNull Git git) {
@@ -62,7 +56,7 @@ public class CleverCheckoutProvider extends GitCheckoutProvider {
 
   @Override
   public void doCheckout(@NotNull Project project, @Nullable Listener listener) {
-    if (GitUtils.testGitExecutable(project)) return;
+    if (!GitUtils.testGitExecutable(project)) return;
     BasicAction.saveAll();
 
     List<Application> applicationList;
