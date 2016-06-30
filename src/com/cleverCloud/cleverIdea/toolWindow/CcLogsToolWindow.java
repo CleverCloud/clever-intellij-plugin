@@ -24,7 +24,7 @@
 
 package com.cleverCloud.cleverIdea.toolWindow;
 
-import com.cleverCloud.cleverIdea.ProjectSettings;
+import com.cleverCloud.cleverIdea.settings.ProjectSettings;
 import com.cleverCloud.cleverIdea.api.CcApi;
 import com.cleverCloud.cleverIdea.api.CleverCloudApi;
 import com.cleverCloud.cleverIdea.api.json.Application;

@@ -24,7 +24,7 @@
 
 package com.cleverCloud.cleverIdea.api;
 
-import com.cleverCloud.cleverIdea.ApplicationSettings;
+import com.cleverCloud.cleverIdea.settings.ApplicationSettings;
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.cleverCloud.cleverIdea.api.json.WebSocket;
 import com.cleverCloud.cleverIdea.ui.CcApiLogin;

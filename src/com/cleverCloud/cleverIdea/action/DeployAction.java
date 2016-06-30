@@ -24,7 +24,7 @@
 
 package com.cleverCloud.cleverIdea.action;
 
-import com.cleverCloud.cleverIdea.ProjectSettings;
+import com.cleverCloud.cleverIdea.settings.ProjectSettings;
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.cleverCloud.cleverIdea.ui.SelectApplication;
 import com.intellij.dvcs.DvcsUtil;

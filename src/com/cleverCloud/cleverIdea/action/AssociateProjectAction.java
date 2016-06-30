@@ -24,7 +24,7 @@
 
 package com.cleverCloud.cleverIdea.action;
 
-import com.cleverCloud.cleverIdea.ProjectSettings;
+import com.cleverCloud.cleverIdea.settings.ProjectSettings;
 import com.cleverCloud.cleverIdea.vcs.GitProjectDetector;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.cleverCloud.cleverIdea;
+package com.cleverCloud.cleverIdea.settings;
 
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;

@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 
-package com.cleverCloud.cleverIdea;
+package com.cleverCloud.cleverIdea.component;
 
+import com.cleverCloud.cleverIdea.settings.ProjectSettings;
 import com.cleverCloud.cleverIdea.toolWindow.CcLogsToolWindow;
 import com.cleverCloud.cleverIdea.utils.ApplicationsUtilities;
 import com.cleverCloud.cleverIdea.vcs.GitProjectDetector;

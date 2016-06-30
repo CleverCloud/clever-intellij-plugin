@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.cleverCloud.cleverIdea;
+package com.cleverCloud.cleverIdea.settings;
 
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.intellij.openapi.components.*;
