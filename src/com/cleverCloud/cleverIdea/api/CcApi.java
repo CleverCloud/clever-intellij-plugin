@@ -67,8 +67,8 @@ public class CcApi {
 
     myService = new ServiceBuilder().provider(CleverCloudApi.class).apiKey(API_KEY).apiSecret(API_SECRET).callback(API_CALLBACK).build();
 
-    if (applicationSettings.oAuthToken != null && applicationSettings.oAuthSecret != null) {
-      myAccessToken = new Token(applicationSettings.oAuthToken, applicationSettings.oAuthSecret);
+    if (applicationSettings.getOAuthToken() != null && applicationSettings.getOAuthSecret() != null) {
+      myAccessToken = new Token(applicationSettings.getOAuthToken(), applicationSettings.getOAuthSecret());
       return true;
     }
 
@@ -76,8 +76,8 @@ public class CcApi {
 
     if (login.showAndGet()) {
       myAccessToken = new Token(login.getToken(), login.getSecret());
-      applicationSettings.oAuthToken = login.getToken();
-      applicationSettings.oAuthSecret = login.getSecret();
+      applicationSettings.setOAuthToken(login.getToken());
+      applicationSettings.setOAuthSecret(login.getSecret());
       return true;
     }
 

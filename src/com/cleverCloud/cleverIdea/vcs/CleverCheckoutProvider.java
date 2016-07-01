@@ -56,7 +56,7 @@ public class CleverCheckoutProvider extends GitCheckoutProvider {
 
   @Override
   public void doCheckout(@NotNull Project project, @Nullable Listener listener) {
-    if (!GitUtils.testGitExecutable(project)) return;
+    if (!GitUtils.INSTANCE.testGitExecutable(project)) return;
     BasicAction.saveAll();
 
     List<Application> applicationList;
@@ -96,7 +96,7 @@ public class CleverCheckoutProvider extends GitCheckoutProvider {
     json = ccApi.apiRequest("/self");
     HashMap hashMap;
     try {
-      hashMap = JacksonUtils.jsonToMap(json);
+      hashMap = JacksonUtils.INSTANCE.jsonToMap(json);
     }
     catch (IOException e) {
       e.printStackTrace();

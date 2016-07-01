@@ -48,8 +48,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GitProjectDetector {
-  @NotNull private final Pattern pattern =
-    Pattern.compile("^git\\+ssh://git@push\\.[\\w]{3}\\.clever-cloud\\.com/(app_([a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}))\\.git$");
+  /**
+   * TODO : move patterns in the CcApi.
+   */
+  @NotNull private final String applicationPattern = "app_([a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12})";
+  @NotNull private final Pattern pattern = Pattern.compile("^git\\+ssh://git@push\\.[\\w]{3}\\.clever-cloud\\.com/(" + applicationPattern + ")\\.git$");
   private final Project myProject;
   @Nullable private GitRepositoryManager myGitRepositoryManager = null;
 
@@ -60,13 +63,14 @@ public class GitProjectDetector {
 
   public void detect() {
     ArrayList<Application> applicationList = getApplicationList(getAppList());
-    String remoteStringList = ApplicationsUtilities.remoteListToString(applicationList);
     String content;
-    if (remoteStringList == null) {
+    if (applicationList.isEmpty()) {
       content = "No Clever Cloud application has been found in your remotes.<br />" +
                 "Add a remote with the command :<br /><pre>git remote add clever &lt;URL&gt;</pre>";
     }
     else {
+      String remoteStringList = ApplicationsUtilities.INSTANCE.remoteListToString(applicationList);
+
       content = String.format(
         "Clever IDEA has detected the following remotes corresponding to Clever Cloud applications :<ul>%s</ul>You can push on one of this " +
         "remotes using VCS | Clever Cloud... | Push on Clever Cloud.", remoteStringList);
@@ -75,7 +79,7 @@ public class GitProjectDetector {
     new Notification("Vcs Important Messages", "Clever Cloud application detection", content, NotificationType.INFORMATION)
       .notify(myProject);
 
-    ServiceManager.getService(myProject, ProjectSettings.class).applications = applicationList;
+    ServiceManager.getService(myProject, ProjectSettings.class).setApplications(applicationList);
     //CcLogsToolWindow.openToolWindow(myProject);
   }
 

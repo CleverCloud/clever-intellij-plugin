@@ -78,7 +78,7 @@ public class CleverCloudProjectComponent implements ProjectComponent {
   public void projectOpened() {
     ProjectSettings projectSettings = ServiceManager.getService(myProject, ProjectSettings.class);
     try {
-      if (projectSettings.applications.isEmpty()) {
+      if (projectSettings.getApplications().isEmpty()) {
         detectCleverApp();
       }
       else {
@@ -128,12 +128,12 @@ public class CleverCloudProjectComponent implements ProjectComponent {
                                                         final ArrayList<HashTable> appList,
                                                         final ProjectSettings projectSettings) {
     return (notification, event) -> {
-      projectSettings.applications = gitProjectDetector.getApplicationList(appList);
+      projectSettings.setApplications(gitProjectDetector.getApplicationList(appList));
       notification.expire();
 
       new Notification("Vcs Minor Notifications", "Applications successfully linked", String
         .format("The following Clever Cloud application have been linked successfully :<br />%s",
-                ApplicationsUtilities.remoteListToString(projectSettings.applications)), NotificationType.INFORMATION).notify(myProject);
+                ApplicationsUtilities.INSTANCE.remoteListToString(projectSettings.getApplications())), NotificationType.INFORMATION).notify(myProject);
     };
   }
 }

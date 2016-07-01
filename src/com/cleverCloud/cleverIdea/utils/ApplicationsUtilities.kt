@@ -22,32 +22,27 @@
  * SOFTWARE.
  */
 
-package com.cleverCloud.cleverIdea.settings;
+package com.cleverCloud.cleverIdea.utils
 
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
-import com.intellij.util.xmlb.XmlSerializerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.cleverCloud.cleverIdea.api.json.Application
+
+import java.util.ArrayList
 
 /**
- * Manage application settings as user tokens.
+ * Utilities for applications.
  */
-@State(
-  name = "CleverIdeaApplicationSettings",
-  storages = @Storage(id = "other", file = StoragePathMacros.APP_CONFIG + "cleverIdea.xml"))
-public class ApplicationSettings implements PersistentStateComponent<ApplicationSettings> {
-  @Nullable public String oAuthToken = null;
-  @Nullable public String oAuthSecret = null;
+object ApplicationsUtilities {
+    /**
+     * List applications as a string.
+     */
+    fun remoteListToString(applications: ArrayList<Application>): String? {
+        if (applications.isEmpty()) return null
 
-  @NotNull
-  public ApplicationSettings getState() {
-    return this;
-  }
+        var list = ""
+        for (application in applications) {
+            list += String.format("<li>%s<br /></li>", application.name)
+        }
 
-  public void loadState(@NotNull ApplicationSettings state) {
-    XmlSerializerUtil.copyBean(state, this);
-  }
+        return list
+    }
 }
