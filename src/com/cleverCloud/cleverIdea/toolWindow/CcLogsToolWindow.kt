@@ -24,31 +24,24 @@
 
 package com.cleverCloud.cleverIdea.toolWindow
 
-import com.cleverCloud.cleverIdea.settings.ProjectSettings
 import com.cleverCloud.cleverIdea.api.CcApi
-import com.cleverCloud.cleverIdea.api.CleverCloudApi
+import com.cleverCloud.cleverIdea.api.LOGS_SOKCET_URL
 import com.cleverCloud.cleverIdea.api.json.Application
+import com.cleverCloud.cleverIdea.settings.ProjectSettings
 import com.cleverCloud.cleverIdea.utils.WebSocketCore
-import com.intellij.execution.filters.TextConsoleBuilder
 import com.intellij.execution.filters.TextConsoleBuilderFactory
 import com.intellij.execution.ui.ConsoleView
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowAnchor
 import com.intellij.openapi.wm.ToolWindowManager
-import com.intellij.ui.content.Content
 import com.intellij.ui.content.ContentManager
-
 import java.net.URI
 import java.net.URISyntaxException
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
-import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.Date
-import java.util.TimeZone
+import java.util.*
 
 /**
  * Tool window displaying logs of linked applications.
@@ -60,14 +53,13 @@ import java.util.TimeZone
 class CcLogsToolWindow(private val project: Project) {
 
     init {
-        val toolWindow = ToolWindowManager.getInstance(project).registerToolWindow("Logs Clever Cloud", false, ToolWindowAnchor.BOTTOM, true)
-        val contentManager = toolWindow.contentManager
-        val projectSettings = ServiceManager.getService(project, ProjectSettings::class.java)
-        val applications = projectSettings.applications
+        val contentManager = ToolWindowManager
+                .getInstance(project)
+                .registerToolWindow("Logs Clever Cloud", false, ToolWindowAnchor.BOTTOM, true)
+                .contentManager
+        val applications = ServiceManager.getService(project, ProjectSettings::class.java).applications
 
-        for (application in applications) {
-            addApplication(application, contentManager)
-        }
+        applications.forEach { addApplication(it, contentManager) }
     }
 
     /**
@@ -93,13 +85,15 @@ class CcLogsToolWindow(private val project: Project) {
         }
     }
 
+    /**
+     * TODO : better error reporting (avoid print stacktrace)
+     */
     private fun writeLogs(project: Project, lastUsedApplication: Application, consoleView: ConsoleView) {
         val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:s.S'Z'")
         df.timeZone = TimeZone.getTimeZone("UTC")
-        val timestamp = df.format(Date())
 
         try {
-            val logUri = URI(String.format(CleverCloudApi.LOGS_SOKCET_URL, lastUsedApplication.id, timestamp))
+            val logUri = URI(String.format(LOGS_SOKCET_URL, lastUsedApplication.id, df.format(Date())))
             val webSocketCore = WebSocketCore(logUri, project, consoleView)
             webSocketCore.connect()
         } catch (e: URISyntaxException) {

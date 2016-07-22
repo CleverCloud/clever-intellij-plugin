@@ -25,8 +25,7 @@
 package com.cleverCloud.cleverIdea.utils
 
 import com.cleverCloud.cleverIdea.api.json.Application
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Utilities for applications.
@@ -35,14 +34,13 @@ object ApplicationsUtilities {
     /**
      * List applications as a string.
      */
-    fun remoteListToString(applications: ArrayList<Application>): String? {
-        if (applications.isEmpty()) return null
+    fun remoteListToString(applications: ArrayList<Application>): Optional<String> {
+        if (applications.isEmpty()) return Optional.empty()
 
         var list = ""
-        for (application in applications) {
-            list += String.format("<li>%s<br /></li>", application.name)
-        }
 
-        return list
+        applications.forEach { list += String.format("<li>%s<br /></li>", it.name) }
+
+        return Optional.of(list)
     }
 }

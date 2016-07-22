@@ -39,23 +39,21 @@ object GitUtils {
      * @return <code>true</code> if executable is valid, otherwise <code>false</code>.
      */
     fun testGitExecutable(project: Project): Boolean {
-        val executable = GitVcsApplicationSettings.getInstance().pathToGit
-
-        val version: GitVersion
+        val executable: String
         try {
-            version = GitVersion.identifyVersion(executable)
-        } catch (var5: Exception) {
+            executable = GitVcsApplicationSettings.getInstance().pathToGit
+        } catch (e: IllegalStateException) {
             Notification("Vcs Important Messages", "Git executable can't be found",
-                    "The git executable ca not be found. Please check your settings.", NotificationType.INFORMATION).notify(project)
+                    "The git executable cannot be found. Please check your settings.", NotificationType.INFORMATION).notify(project)
             return false
         }
 
-        if (!version.isSupported) {
+        if (GitVersion.identifyVersion(executable).isSupported.not()) {
             Notification("Vcs Important Messages", "Git version unsupported",
                     "Your version of git is not supported.", NotificationType.INFORMATION).notify(project)
             return false
-        } else {
-            return true
         }
+
+        return true
     }
 }

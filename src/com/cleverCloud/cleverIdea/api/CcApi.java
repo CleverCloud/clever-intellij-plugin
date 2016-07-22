@@ -102,7 +102,7 @@ public class CcApi {
       return null;
     }
 
-    OAuthRequest request = new OAuthRequest(Verb.GET, CleverCloudApi.BASE_URL + url);
+    OAuthRequest request = new OAuthRequest(Verb.GET, CleverCloudApiKt.AUTHORIZE_URL + url);
     assert myService != null;
     myService.signRequest(myAccessToken, request);
     return request.send().getBody();
@@ -117,7 +117,7 @@ public class CcApi {
 
   @Nullable
   public String logRequest(@NotNull Application application) {
-    String url = CleverCloudApi.LOGS_URL + application.id + "?limit=300&order=asc";
+    String url = CleverCloudApiKt.LOGS_ENDPOINT + application.id + "?limit=300&order=asc";
     System.out.println(url);
     OAuthRequest request = new OAuthRequest(Verb.GET, url);
 
@@ -132,7 +132,7 @@ public class CcApi {
   public String wsLogSigner() {
     if (!isValidate() && !login()) return null;
 
-    OAuthRequest request = new OAuthRequest(Verb.GET, CleverCloudApi.BASE_URL);
+    OAuthRequest request = new OAuthRequest(Verb.GET, CleverCloudApiKt.HTTP_BASE_URL);
     assert myService != null;
     myService.signRequest(myAccessToken, request);
     WebSocket ws = new WebSocket(request.getHeaders().toString().replace("{Authorization=", "").replace("}", ""));

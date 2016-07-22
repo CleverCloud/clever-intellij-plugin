@@ -29,35 +29,36 @@ import com.cleverCloud.cleverIdea.vcs.GitProjectDetector
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.ServiceManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vcs.ProjectLevelVcsManager
 import git4idea.GitVcs
 
+/**
+ * Action to update the applications associated with the current project.
+ */
 class AssociateProjectAction : AnAction() {
 
+    /**
+     * @see AnAction.actionPerformed
+     */
     override fun actionPerformed(e: AnActionEvent) {
-        if (e.project == null) return
-        val gitProjectDetector = GitProjectDetector(e.project)
+        val gitProjectDetector = GitProjectDetector(e.project as Project)
         gitProjectDetector.detect()
     }
 
+    /**
+     * @see AnAction.update
+     */
     override fun update(e: AnActionEvent) {
-        if (e.project == null) {
-            e.presentation.isEnabledAndVisible = false
-            return
-        }
-
-        val projectLevelVcsManager = ProjectLevelVcsManager.getInstance(e.project)
-
-        if (!projectLevelVcsManager.checkVcsIsActive(GitVcs.NAME)) {
+        if (e.project == null || ProjectLevelVcsManager.getInstance(e.project).checkVcsIsActive(GitVcs.NAME).not()) {
             e.presentation.isEnabledAndVisible = false
             return
         } else {
             e.presentation.isEnabledAndVisible = true
         }
 
-        val projectSettings = ServiceManager.getService(e.project!!, ProjectSettings::class.java)
-        if (!projectSettings.applications.isEmpty()) {
-            e.presentation.text = "Update associate applications"
-        }
+        val projectSettings = ServiceManager.getService(e.project as Project, ProjectSettings::class.java)
+
+        if (projectSettings.applications.isNotEmpty()) e.presentation.text = "Update associate applications"
     }
 }
