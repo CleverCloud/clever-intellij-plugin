@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Clever Cloud, SAS
+ * Copyright (c) 2016 Clever Cloud, SAS
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,15 @@
 
 package com.cleverCloud.cleverIdea.api
 
-import org.scribe.builder.api.DefaultApi10a
-import org.scribe.model.Token
-import org.scribe.services.PlaintextSignatureService
-import org.scribe.services.SignatureService
+import com.github.scribejava.core.builder.api.DefaultApi10a
+import com.github.scribejava.core.model.OAuth1RequestToken
+import com.github.scribejava.core.services.PlaintextSignatureService
+import com.github.scribejava.core.services.SignatureService
 
 /**
  * Class representing the API used by Scribe to interact with the Clever Cloud API.
  */
-class CleverCloudApi : DefaultApi10a() {
+object CleverCloudApi : DefaultApi10a() {
 
     override fun getAccessTokenEndpoint(): String {
         return HTTP_BASE_URL + "/oauth/access_token"
@@ -42,7 +42,7 @@ class CleverCloudApi : DefaultApi10a() {
         return HTTP_BASE_URL + "/oauth/request_token"
     }
 
-    override fun getAuthorizationUrl(requestToken: Token): String {
+    override fun getAuthorizationUrl(requestToken: OAuth1RequestToken): String {
         return String.format(AUTHORIZE_URL, requestToken.token)
     }
 

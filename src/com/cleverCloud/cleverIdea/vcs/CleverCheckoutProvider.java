@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Clever Cloud, SAS
+ * Copyright (c) 2016 Clever Cloud, SAS
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,7 +60,7 @@ public class CleverCheckoutProvider extends GitCheckoutProvider {
     BasicAction.saveAll();
 
     List<Application> applicationList;
-    CcApi ccApi = CcApi.getInstance(project);
+      CcApi ccApi = CcApi.Companion.getInstance(project);
     ccApi.login();
 
     applicationList = getApplicationsFromOrga(project);
@@ -86,7 +86,7 @@ public class CleverCheckoutProvider extends GitCheckoutProvider {
   }
 
   private List<Application> getApplicationsFromOrga(@NotNull Project project) {
-    CcApi ccApi = CcApi.getInstance(project);
+      CcApi ccApi = CcApi.Companion.getInstance(project);
     String json = ccApi.apiRequest("/self/applications");
     assert json != null;
     List<Application> applicationsList = new ArrayList<>();

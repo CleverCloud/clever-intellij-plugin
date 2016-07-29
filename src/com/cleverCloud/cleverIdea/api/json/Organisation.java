@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Clever Cloud, SAS
+ * Copyright (c) 2016 Clever Cloud, SAS
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ public class Organisation extends CleverService {
   @Nullable
   public Application[] getChildren(@NotNull Project project) {
     ObjectMapper mapper = new ObjectMapper();
-    CcApi ccApi = CcApi.getInstance(project);
+      CcApi ccApi = CcApi.Companion.getInstance(project);
     String json = ccApi.apiRequest((id.equals("self") ? "/" : "/organisations/") + this.id + "/applications");
     Application[] children = null;
 
