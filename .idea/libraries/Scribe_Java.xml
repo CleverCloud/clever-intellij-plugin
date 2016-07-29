@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Scribe Java" type="repository">
+    <properties maven-id="com.github.scribejava:scribejava-core:RELEASE" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/scribejava/scribejava-core/3.0.0/scribejava-core-3.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
