@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Clever Cloud, SAS
+ * Copyright (c) 2016 Clever Cloud, SAS
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -86,7 +86,8 @@ class GitProjectDetector(private val myProject: Project) {
             repositoryList.forEach {
                 val aRepository: Repository = it
 
-                it.remotes.forEach { it.urls.forEach {
+                it.remotes.forEach {
+                    it.urls.forEach {
                         val matcher = pattern.matcher(it)
 
                         if (matcher.matches()) {
@@ -104,9 +105,8 @@ class GitProjectDetector(private val myProject: Project) {
 
     /**
      * Transform detected app in the project into Application list by getting info in the Clever Cloud API.
-
+     *
      * @param appList List of HashTable containing : {"AppID" => String, "Repository" => GitRepository}
-     * *
      * @return ArrayList containing [Application] of the current project
      */
     fun getApplicationList(appList: List<HashTable>): ArrayList<Application> {
@@ -126,7 +126,6 @@ class GitProjectDetector(private val myProject: Project) {
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
-
             }
         }
 
@@ -134,9 +133,7 @@ class GitProjectDetector(private val myProject: Project) {
     }
 
     private enum class AppInfos {
-        /**  */
         APP_ID,
-        /**  */
         REPOSITORY
     }
 }
