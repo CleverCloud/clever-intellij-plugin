@@ -58,8 +58,8 @@ const val WSS_BASE_URL = "wss://api.clever-cloud.com/v2"
 /** Logs endpoint */
 const val LOGS_ENDPOINT = HTTP_BASE_URL + "/logs/"
 /** Logs' web socket endpoint */
-const val LOGS_SOKCET_URL = WSS_BASE_URL + "/logs-socket/%s?since=%s"
+const val LOGS_SOKCET_URL = WSS_BASE_URL + "/logs-socket/%s?since="
 /** Maximum lines of log to fetch */
 const val LOGS_LIMIT = 300
 /**  */
-const val AUTHORIZE_URL = HTTP_BASE_URL + "/oauth/authorize?oauth_token=%s"
+const val AUTHORIZE_URL = HTTP_BASE_URL + "/oauth/authorize?oauth_token="

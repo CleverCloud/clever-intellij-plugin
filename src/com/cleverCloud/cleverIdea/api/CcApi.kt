@@ -87,7 +87,7 @@ class CcApi {
             return null
         }
 
-        val request = OAuthRequest(Verb.GET, AUTHORIZE_URL + url, myService)
+        val request = OAuthRequest(Verb.GET, HTTP_BASE_URL + url, myService)
         myService!!.signRequest(myAccessToken, request)
         return request.send().body
     }
