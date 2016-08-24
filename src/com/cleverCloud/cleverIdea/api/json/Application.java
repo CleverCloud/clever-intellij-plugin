@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Clever Cloud, SAS
+ * Copyright (c) 2016 Clever Cloud, SAS
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,8 +43,6 @@ public class Application extends CleverService {
 
   @Override
   public String toString() {
-    String name;
-    name = this.parent.name + "/" + this.name;
-    return name;
+    return this.parent.name + "/" + this.name;
   }
 }

@@ -24,7 +24,7 @@
 
 package com.cleverCloud.cleverIdea.action;
 
-import com.cleverCloud.cleverIdea.ProjectSettings;
+import com.cleverCloud.cleverIdea.settings.ProjectSettings;
 import com.cleverCloud.cleverIdea.api.json.Application;
 import com.cleverCloud.cleverIdea.ui.SelectApplication;
 import com.intellij.dvcs.DvcsUtil;
@@ -65,7 +65,8 @@ public class DeployAction extends AnAction {
     if (e.getProject() == null) return;
 
     ProjectSettings projectSettings = ServiceManager.getService(e.getProject(), ProjectSettings.class);
-    ArrayList<Application> applications = projectSettings.applications;
+    ArrayList<Application> applications = projectSettings.getApplications();
+    Application lastApplication = projectSettings.getLastUsedApplication();
 
     if (applications.isEmpty()) {
       new Notification("Vcs Important Messages", "No application available",
@@ -74,8 +75,6 @@ public class DeployAction extends AnAction {
       return;
     }
 
-    Application lastApplication = projectSettings.lastUsedApplication;
-    if (!applications.contains(lastApplication)) lastApplication = projectSettings.lastUsedApplication = null;
     SelectApplication dialog = new SelectApplication(e.getProject(), applications, lastApplication);
 
     if (dialog.showAndGet()) {
@@ -85,7 +84,7 @@ public class DeployAction extends AnAction {
           pushOnClever(dialog, e.getProject());
         }
       });
-      projectSettings.lastUsedApplication = dialog.getSelectedItem();
+      projectSettings.setLastUsedApplication(dialog.getSelectedItem());
     }
   }
 
@@ -142,7 +141,7 @@ public class DeployAction extends AnAction {
     }
 
     ProjectSettings projectSettings = ServiceManager.getService(e.getProject(), ProjectSettings.class);
-    if (projectSettings.applications.isEmpty()) {
+    if (projectSettings.getApplications().isEmpty()) {
       e.getPresentation().setEnabled(false);
       return;
     }

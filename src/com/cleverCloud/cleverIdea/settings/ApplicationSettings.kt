@@ -22,18 +22,41 @@
  * SOFTWARE.
  */
 
-package com.cleverCloud.cleverIdea.utils;
+package com.cleverCloud.cleverIdea.settings
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.intellij.openapi.components.PersistentStateComponent
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.StoragePathMacros
+import com.intellij.util.xmlb.XmlSerializerUtil
 
-import java.io.IOException;
-import java.util.HashMap;
+/**
+ * Manage application settings as user tokens.
+ */
+@State(
+        name = "CleverIdeaApplicationSettings",
+        storages = arrayOf(Storage("cleverIdea.xml")))
+class ApplicationSettings : PersistentStateComponent<ApplicationSettings> {
+    /**
+     * OAuth token used to connect to the API.
+     */
+    var oAuthToken: String? = null
+    /**
+     * OAuth secret used to connect to the API.
+     */
+    var oAuthSecret: String? = null
 
-public class JacksonUtils {
-  public static HashMap jsonToMap(String json) throws IOException {
-    ObjectMapper mapper = new ObjectMapper();
-    return mapper.readValue(json, HashMap.class);
-  }
+    /**
+     * @see PersistentStateComponent.getState
+     */
+    override fun getState(): ApplicationSettings {
+        return this
+    }
+
+    /**
+     * @see PersistentStateComponent.loadState
+     */
+    override fun loadState(state: ApplicationSettings) {
+        XmlSerializerUtil.copyBean(state, this)
+    }
 }

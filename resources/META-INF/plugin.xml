@@ -25,7 +25,7 @@
 <idea-plugin version="2">
   <id>com.clever-cloud.clever-idea</id>
   <name>Clever Cloud Integration</name>
-  <version>0.5</version>
+  <version>0.6</version>
   <vendor email="gauthier.pogam-lemontagner@clever-cloud.com"
           url="http://www.clever-cloud.com">Clever Cloud
   </vendor>
@@ -46,7 +46,7 @@
   </change-notes>
 
   <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="142.5047"/>
+  <idea-version since-build="162.0"/>
 
   <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
@@ -56,8 +56,8 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-    <projectService serviceImplementation="com.cleverCloud.cleverIdea.ProjectSettings"/>
-    <applicationService serviceImplementation="com.cleverCloud.cleverIdea.ApplicationSettings"/>
+    <projectService serviceImplementation="com.cleverCloud.cleverIdea.settings.ProjectSettings"/>
+    <applicationService serviceImplementation="com.cleverCloud.cleverIdea.settings.ApplicationSettings"/>
     <checkoutProvider implementation="com.cleverCloud.cleverIdea.vcs.CleverCheckoutProvider"/>
   </extensions>
 
@@ -68,7 +68,7 @@
   <project-components>
     <!-- Add your project components here -->
     <component>
-      <implementation-class>com.cleverCloud.cleverIdea.CleverCloudProjectComponent</implementation-class>
+      <implementation-class>com.cleverCloud.cleverIdea.component.CleverCloudProjectComponent</implementation-class>
     </component>
   </project-components>
 

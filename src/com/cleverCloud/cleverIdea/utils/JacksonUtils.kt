@@ -22,24 +22,23 @@
  * SOFTWARE.
  */
 
-package com.cleverCloud.cleverIdea.utils;
+package com.cleverCloud.cleverIdea.utils
 
-import com.cleverCloud.cleverIdea.api.json.Application;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.fasterxml.jackson.databind.ObjectMapper
 
-import java.util.ArrayList;
+import java.io.IOException
+import java.util.HashMap
 
-public class ApplicationsUtilities {
-  @Nullable
-  public static String remoteListToString(@NotNull ArrayList<Application> applications) {
-    if (applications.isEmpty()) return null;
-
-    String linkList = "";
-    for (Application application : applications) {
-      linkList = linkList + String.format("<li>%s<br /></li>", application.name);
+/**
+ * Utilities for Jackson
+ */
+object JacksonUtils {
+    /**
+     * Convert json to map.
+     */
+    @Throws(IOException::class)
+    fun jsonToMap(json: String): HashMap<*, *> {
+        val mapper = ObjectMapper()
+        return mapper.readValue(json, HashMap::class.java)
     }
-
-    return linkList;
-  }
 }

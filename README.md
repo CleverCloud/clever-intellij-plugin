@@ -33,6 +33,13 @@ installation of **IntelliJ IDEA 15** (Community or Ultimate).
 The project includes necessary configuration to work on the plugin (Code Style, UI Designer, Plugin Dependencies, libraries, ...), so you
 can directly start to edit the project.
 
+### Roadmap
+
+- Extract the Clever Cloud API in a separate library.
+- Add Event notification (deploy status, ...) in the IDE as available in the console.
+- Add a wizard to create Clever Cloud applications inside the IDE.
+- Automatically configure database connection form linked add-ons.
+
 ### Find documentation
 
 Some useful topics hase been opened in the JetBrains forum:
